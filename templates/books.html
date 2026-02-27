@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Все книги - Книжная система{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-book"></i> Все книги</h2>
+    
+    <form method="get" class="d-flex">
+        <input type="text" name="search" class="form-control me-2" placeholder="Поиск книг..." value="{{ search_query or '' }}">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+</div>
+
+{% if search_query %}
+<div class="alert alert-info">
+    Результаты поиска для: "{{ search_query }}"
+</div>
+{% endif %}
+
+<div class="row">
+    {% for book in books %}
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 book-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text text-muted">{{ book.author.name }}</p>
+                {% if book.average_rating %}
+                <div class="rating">
+                    <span class="text-warning">
+                        {% for i in range(5) %}
+                            {% if i < book.average_rating|int %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                    <small class="text-muted">({{ "%.1f"|format(book.average_rating) }})</small>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <div class="d-grid">
+                    <a href="/книги/{{ book.id }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-info-circle"></i> Подробнее
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-warning text-center">
+            {% if search_query %}
+            Книги по запросу "{{ search_query }}" не найдены.
+            {% else %}
+            Книги не найдены.
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Убрана обработка кнопок "В мои книги", так как их больше нет на этой странице
+// Вся основная логика находится в base.html
+</script>
+{% endblock %}

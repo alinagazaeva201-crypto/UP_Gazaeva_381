@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}Редактировать профиль - Книжная система{% endblock %}
+{% block content %}
+<!-- Приветственная секция -->
+<div class="welcome-section text-center mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3"><i class="fas fa-user-edit"></i> Редактировать профиль</h1>
+        <p class="lead mb-0">Обновите информацию о себе</p>
+    </div>
+</div>
+<!-- Разделитель -->
+<div class="divider mb-5"></div>
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                <h3>Редактирование профиля</h3>
+                <p class="mb-0 opacity-75">Обновите вашу информацию</p>
+            </div>
+            <div class="auth-body">
+                <form method="POST" action="/редактировать-профиль" id="editProfileForm">
+                    <!-- Основная информация -->
+                    <div class="mb-4">
+                        <h6 class="mb-3" style="color: var(--primary-color);">
+                            <i class="fas fa-user me-2"></i>Основная информация
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="firstName" name="first_name"
+                                           value="{{ user.first_name or '' }}" placeholder="Имя">
+                                    <label for="firstName">Имя</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="lastName" name="last_name"
+                                           value="{{ user.last_name or '' }}" placeholder="Фамилия">
+                                    <label for="lastName">Фамилия</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <h6 class="mb-3" style="color: var(--primary-color);">
+                            <i class="fas fa-envelope me-2"></i>Контактная информация
+                        </h6>
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="email" name="email"
+                                   value="{{ user.email or '' }}" placeholder="Email">
+                            <label for="email">Email</label>
+                            <div class="form-text">На этот email будут приходить уведомления</div>
+                        </div>
+                    </div>
+                    <!-- Смена пароля -->
+                    <div class="mb-4">
+                        <h6 class="mb-3" style="color: var(--primary-color);">
+                            <i class="fas fa-key me-2"></i>Смена пароля
+                        </h6>
+                        <div class="form-text mb-3">Заполняйте только если хотите сменить пароль</div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="currentPassword"
+                                       name="current_password" placeholder="Текущий пароль">
+                                <label for="currentPassword">Текущий пароль</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="newPassword"
+                                       name="new_password" placeholder="Новый пароль">
+                                <label for="newPassword">Новый пароль</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="confirmPassword"
+                                       name="confirm_password" placeholder="Подтверждение пароля">
+                                <label for="confirmPassword">Подтверждение пароля</label>
+                            </div>
+                            <div id="passwordError" class="text-danger small mt-1" style="display: none;">
+                                Пароли не совпадают
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Кнопки -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="/профиль" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Назад к профилю
+                        </a>
+                        <button type="submit" class="btn btn-primary" id="saveBtn">
+                            <i class="fas fa-save"></i> Сохранить изменения
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.auth-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    overflow: hidden;
+}
+.auth-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 2.5rem;
+    text-align: center;
+}
+.auth-body {
+    padding: 2.5rem;
+}
+.auth-logo {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+.welcome-section {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 2rem 0;
+    margin: -2rem -2rem 2rem -2rem;
+    border-radius: 0 0 20px 20px;
+}
+.divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    margin: 2rem 0;
+}
+
+</style>
+{% endblock %}
+{% block scripts %}
+<script>
+// Функция для показа уведомлений
+function showNotification(message, type) {
+    const existingAlerts = document.querySelectorAll('.alert.position-fixed');
+    existingAlerts.forEach(alert => alert.remove());
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+    alert.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alert);
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.remove();
+        }
+    }, 3000);
+}
+
+// Валидация пароля
+document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const passwordError = document.getElementById('passwordError');
+
+    if (newPassword && newPassword !== confirmPassword) {
+        passwordError.style.display = 'block';
+        e.preventDefault();
+    } else {
+        passwordError.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

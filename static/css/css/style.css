@@ -1,0 +1,267 @@
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+.min-vh-80 {
+    min-height: 80vh;
+}
+
+.book-card {
+    transition: transform 0.2s;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.rating {
+    margin-bottom: 10px;
+}
+
+.add-favorite {
+    width: 100%;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* ОСНОВНАЯ ЦВЕТОВАЯ СХЕМА */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* Кнопка Подробнее */
+.btn-outline-primary {
+    color: #667eea;
+    border-color: #667eea;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+}
+
+/* ВСЕ КНОПКИ ИЗБРАННОГО */
+[class*="favorite"], 
+#favoriteBtn,
+.add-favorite {
+    color: #8b5cf6 !important;
+    border-color: #8b5cf6 !important;
+    background: transparent !important;
+}
+
+[class*="favorite"]:hover, 
+#favoriteBtn:hover,
+.add-favorite:hover {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    border-color: #8b5cf6 !important;
+    color: white !important;
+}
+
+/* Добавлено в избранное */
+.btn-danger,
+.add-favorite.added,
+#favoriteBtn.btn-danger {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    border-color: #8b5cf6 !important;
+    color: white !important;
+}
+
+/* ВСЕ КНОПКИ "В МОИ КНИГИ" */
+[class*="my-books"],
+.add-to-my-books,
+.btn-success,
+.btn-outline-success {
+    color: #a78bfa !important;
+    border-color: #a78bfa !important;
+    background: transparent !important;
+}
+
+[class*="my-books"]:hover,
+.add-to-my-books:hover,
+.btn-success:hover,
+.btn-outline-success:hover {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%) !important;
+    border-color: #a78bfa !important;
+    color: white !important;
+}
+
+/* Добавлено в мои книги */
+.add-to-my-books.added,
+.btn-success:not(.btn-outline-success) {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%) !important;
+    border-color: #a78bfa !important;
+    color: white !important;
+}
+
+/* КНОПКИ СТАТУСОВ */
+.btn-status {
+    color: #667eea !important;
+    border-color: #667eea !important;
+    background: transparent !important;
+}
+
+.btn-status:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-color: #667eea !important;
+    color: white !important;
+}
+
+.btn-outline-warning.btn-status {
+    color: #a78bfa !important;
+    border-color: #a78bfa !important;
+}
+
+.btn-outline-warning.btn-status:hover {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%) !important;
+    border-color: #a78bfa !important;
+    color: white !important;
+}
+
+/* Остальные стили */
+.rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.rating-input input {
+    display: none;
+}
+
+.rating-input label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.alert.position-fixed {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+}
+
+.nav-tabs .nav-link.active {
+    color: #495057;
+    border-bottom: 2px solid #667eea;
+    background: transparent;
+}
+
+
+.user-stats {
+    font-size: 0.9rem;
+    color: #495057;
+}
+.user-stats i {
+    margin-right: 6px;
+    color: var(--primary-color);
+}
+
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.add-to-my-books {
+    transition: all 0.3s ease;
+}
+
+.add-to-my-books:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-status {
+    transition: all 0.2s ease;
+}
+
+.btn-status:hover {
+    transform: translateY(-1px);
+}
+
+.book-card .card-footer .btn {
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+.book-card .card-footer .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-color: #ef4444;
+    color: white;
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%) !important;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .book-card .card-footer .btn {
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+    }
+}
+
+.btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:active {
+    transform: translateY(0);
+}

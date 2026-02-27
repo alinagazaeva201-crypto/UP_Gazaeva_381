@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Книжная система{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Фиолетовая тема (по умолчанию) */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --favorite-color: #8b5cf6;
+            --favorite-gradient: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            --mybooks-color: #a78bfa;
+            --mybooks-gradient: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+            --logout-gradient: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%); /* Более темный фиолетовый */
+        }
+        /* Тема: светло-розовая */
+        .theme-pink {
+            --primary-gradient: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
+            --primary-color: #f472b6;
+            --secondary-color: #db2777;
+            --favorite-color: #f9a8d4;
+            --favorite-gradient: linear-gradient(135deg, #f9a8d4 0%, #f472b6 100%);
+            --mybooks-color: #fbcfe8;
+            --mybooks-gradient: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
+            --logout-gradient: linear-gradient(135deg, #db2777 0%, #be185d 100%); /* Более темная розовая */
+        }
+        /* Тема: черная */
+        .theme-black {
+            --primary-gradient: linear-gradient(135deg, #333 0%, #000 100%);
+            --primary-color: #333;
+            --secondary-color: #000;
+            --favorite-color: #444;
+            --favorite-gradient: linear-gradient(135deg, #444 0%, #333 100%);
+            --mybooks-color: #555;
+            --mybooks-gradient: linear-gradient(135deg, #555 0%, #444 100%);
+            --logout-gradient: linear-gradient(135deg, #222 0%, #000 100%); /* Еще темнее черный */
+        }
+        /* Тема: светло-синяя */
+        .theme-light-blue {
+            --primary-gradient: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            --primary-color: #60a5fa;
+            --secondary-color: #3b82f6;
+            --favorite-color: #93c5fd;
+            --favorite-gradient: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+            --mybooks-color: #bfdbfe;
+            --mybooks-gradient: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+            --logout-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); /* Более темная синяя */
+        }
+        /* Тема: темно-синяя */
+        .theme-dark-blue {
+            --primary-gradient: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            --primary-color: #1e40af;
+            --secondary-color: #1e3a8a;
+            --favorite-color: #3b82f6;
+            --favorite-gradient: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            --mybooks-color: #60a5fa;
+            --mybooks-gradient: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            --logout-gradient: linear-gradient(135deg, #1e3a8a 0%, #1e2d5a 100%); /* Еще темнее синяя */
+        }
+        /* Тема: синяя */
+        .theme-blue {
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            --primary-color: #3b82f6;
+            --secondary-color: #2563eb;
+            --favorite-color: #60a5fa;
+            --favorite-gradient: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            --mybooks-color: #93c5fd;
+            --mybooks-gradient: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+            --logout-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); /* Более темная синяя */
+        }
+        /* Тема: светло-зеленая */
+        .theme-light-green {
+            --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --primary-color: #10b981;
+            --secondary-color: #059669;
+            --favorite-color: #34d399;
+            --favorite-gradient: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            --mybooks-color: #6ee7b7;
+            --mybooks-gradient: linear-gradient(135deg, #6ee7b7 0%, #34d399 100%);
+            --logout-gradient: linear-gradient(135deg, #059669 0%, #047857 100%); /* Более темная зеленая */
+        }
+        /* Тема: хаки */
+        .theme-khaki {
+            --primary-gradient: linear-gradient(135deg, #a3a322 0%, #8a8a1e 100%);
+            --primary-color: #a3a322;
+            --secondary-color: #8a8a1e;
+            --favorite-color: #b8b834;
+            --favorite-gradient: linear-gradient(135deg, #b8b834 0%, #a3a322 100%);
+            --mybooks-color: #d1d166;
+            --mybooks-gradient: linear-gradient(135deg, #d1d166 0%, #b8b834 100%);
+            --logout-gradient: linear-gradient(135deg, #8a8a1e 0%, #717112 100%); /* Более темный хаки */
+        }
+        /* Тема: оранжевая */
+        .theme-orange {
+            --primary-gradient: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
+            --primary-color: #fb923c;
+            --secondary-color: #f36012;
+            --favorite-color: #fdba74;
+            --favorite-gradient: linear-gradient(135deg, #fdba74 0%, #fb923c 100%);
+            --mybooks-color: #fed7aa;
+            --mybooks-gradient: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+            --logout-gradient: linear-gradient(135deg, #db5106 0%, #c2410c 100%); /* Более темная оранжевая */
+        }
+        /* Тема: темно-зеленая */
+        .theme-dark-green {
+            --primary-gradient: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            --primary-color: #047857;
+            --secondary-color: #065f46;
+            --favorite-color: #10b981;
+            --favorite-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            --mybooks-color: #34d399;
+            --mybooks-gradient: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            --logout-gradient: linear-gradient(135deg, #065f46 0%, #064e3b 100%); /* Еще темнее зеленая */
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .welcome-section {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        .feature-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            color: inherit;
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        .nav-link {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            margin: 0 0.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            margin: 2rem 0;
+        }
+        .book-card {
+            transition: transform 0.2s;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .alert.position-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        /* ОБНОВЛЕННЫЕ СТИЛИ КНОПОК С ИСПОЛЬЗОВАНИЕМ ПЕРЕМЕННЫХ */
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            transform: translateY(-2px);
+            color: white;
+        }
+        /* Кнопка Подробнее */
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            background: transparent;
+        }
+        .btn-outline-primary:hover {
+            background: var(--primary-gradient);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        /* КНОПКИ ИЗБРАННОГО */
+        .btn-outline-danger,
+        .add-favorite:not(.added),
+        #favoriteBtn:not(.btn-danger) {
+            color: var(--favorite-color) !important;
+            border-color: var(--favorite-color) !important;
+            background: transparent !important;
+        }
+        .btn-outline-danger:hover,
+        .add-favorite:not(.added):hover,
+        #favoriteBtn:not(.btn-danger):hover {
+            background: var(--favorite-gradient) !important;
+            border-color: var(--favorite-color) !important;
+            color: white !important;
+        }
+        .btn-danger,
+        .add-favorite.added,
+        #favoriteBtn.btn-danger {
+            background: var(--favorite-gradient) !important;
+            border-color: var(--favorite-color) !important;
+            color: white !important;
+        }
+        .btn-danger:hover,
+        .add-favorite.added:hover,
+        #favoriteBtn.btn-danger:hover {
+            background: linear-gradient(135deg, var(--favorite-color) 0%, var(--secondary-color) 100%) !important;
+            border-color: var(--favorite-color) !important;
+            color: white !important;
+        }
+        /* КНОПКИ "В МОИ КНИГИ" */
+        .btn-outline-success,
+        .add-to-my-books:not(.added),
+        .add-to-my-books:not(.btn-success) {
+            color: var(--mybooks-color) !important;
+            border-color: var(--mybooks-color) !important;
+            background: transparent !important;
+        }
+        .btn-outline-success:hover,
+        .add-to-my-books:not(.added):hover,
+        .add-to-my-books:not(.btn-success):hover {
+            background: var(--mybooks-gradient) !important;
+            border-color: var(--mybooks-color) !important;
+            color: white !important;
+        }
+        .btn-success,
+        .add-to-my-books.added,
+        .add-to-my-books.btn-success {
+            background: var(--mybooks-gradient) !important;
+            border-color: var(--mybooks-color) !important;
+            color: white !important;
+        }
+        .btn-success:hover,
+        .add-to-my-books.added:hover,
+        .add-to-my-books.btn-success:hover {
+            background: linear-gradient(135deg, var(--mybooks-color) 0%, var(--favorite-color) 100%) !important;
+            border-color: var(--mybooks-color) !important;
+            color: white !important;
+        }
+        /* КНОПКИ СТАТУСОВ В МОДАЛЬНОМ ОКНЕ */
+        .btn-status {
+            color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            background: transparent !important;
+        }
+        .btn-status:hover {
+            background: var(--primary-gradient) !important;
+            border-color: var(--primary-color) !important;
+            color: white !important;
+        }
+        /* УВЕДОМЛЕНИЯ */
+        .alert-success {
+            background: var(--mybooks-gradient) !important;
+            border-color: var(--mybooks-color) !important;
+            color: white !important;
+        }
+        .alert-info {
+            background: var(--primary-gradient) !important;
+            border-color: var(--primary-color) !important;
+            color: white !important;
+        }
+        .alert-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            border-color: #ef4444 !important;
+            color: white !important;
+        }
+        /* Стили для кнопок выбора темы */
+        .btn-theme {
+            border: 2px solid #e5e7eb;
+            background: white;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        .btn-theme:hover {
+            border-color: var(--primary-color, #667eea);
+            transform: translateY(-2px);
+        }
+        .btn-theme.active {
+            border-color: var(--primary-color, #667eea);
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+        .btn-theme i {
+            margin-right: 8px;
+        }
+        
+        /* ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ ВЫПАДАЮЩЕГО МЕНЮ ПОЛЬЗОВАТЕЛЯ - БЕЗ АВАТАРКИ */
+        .dropdown-user {
+            min-width: 280px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+        }
+        
+        .user-header {
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-info h5 {
+            margin: 0;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .user-info .user-role {
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+        
+        .user-info .user-email {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+        
+        .user-info .user-joined {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+        
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        
+        .menu-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .menu-btn i {
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+        
+        /* КНОПКА ВЫЙТИ - ИСПОЛЬЗУЕТ БОЛЕЕ ТЕМНЫЙ ГРАДИЕНТ ТЕМЫ */
+        .menu-btn-logout {
+            background: var(--logout-gradient);
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+        
+        .menu-btn-logout:hover {
+            background: linear-gradient(135deg, 
+                var(--secondary-color) 0%, 
+                color-mix(in srgb, var(--secondary-color) 80%, black) 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .menu-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #dee2e6, transparent);
+            margin: 12px 0;
+        }
+        
+        /* Адаптивность выпадающего меню */
+        @media (max-width: 768px) {
+            .dropdown-user {
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body data-user-theme="{% if user and user.theme %}{{ user.theme }}{% else %}purple{% endif %}">
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-book"></i> Книжная система
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/книги">Книги</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/рекомендации">Рекомендации</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/telegram-bot">
+                            <i class="fab fa-telegram"></i> Telegram Бот
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Кнопки входа/выхода -->
+                <ul class="navbar-nav">
+                    {% if user %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> {{ user.first_name or user.login }}
+                        </a>
+                        <!-- ОБНОВЛЕННОЕ ВЫПАДАЮЩЕЕ МЕНЮ БЕЗ АВАТАРКИ -->
+                        <div class="dropdown-menu dropdown-user dropdown-menu-end">
+                            <div class="user-header">
+                                <div class="user-info">
+                                    <h5>
+                                        {% if user.first_name and user.last_name %}
+                                            {{ user.first_name }} {{ user.last_name }}
+                                        {% elif user.first_name %}
+                                            {{ user.first_name }}
+                                        {% else %}
+                                            {{ user.login }}
+                                        {% endif %}
+                                    </h5>
+                                    <div class="user-role">Участник</div>
+                                    {% if user.email %}
+                                    <div class="user-email">
+                                        <i class="fas fa-envelope"></i> {{ user.email }}
+                                    </div>
+                                    {% endif %}
+                                    <div class="user-joined">
+                                        <i class="fas fa-calendar-alt"></i> С {{ user.created_at.strftime('%d.%m.%Y') if user.created_at else 'недавно' }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="/профиль" class="menu-btn">
+                                <i class="fas fa-user"></i>
+                                <span>Профиль</span>
+                            </a>
+                            
+                            <a href="#" class="menu-btn" data-bs-toggle="modal" data-bs-target="#themeModal">
+                                <i class="fas fa-palette"></i>
+                                <span>Настройки темы</span>
+                            </a>
+                            
+                            <div class="menu-divider"></div>
+                            
+                            <a href="/выход" class="menu-btn menu-btn-logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Выйти</span>
+                            </a>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/вход">Вход</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/регистрация">Регистрация</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Основной контент -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    <!-- Футер -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container text-center">
+            <p>&copy; 2025 Книжная система. Все права защищены.</p>
+        </div>
+    </footer>
+    <!-- Модальное окно выбора темы -->
+    <div class="modal fade" id="themeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-palette"></i> Выбор темы</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Выберите цветовую тему для сайта:</p>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="purple">
+                                <i class="fas fa-circle" style="color: #8b5cf6;"></i> Фиолетовая
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="pink">
+                                <i class="fas fa-circle" style="color: #f472b6;"></i> Светло-розовая
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="black">
+                                <i class="fas fa-circle" style="color: #333;"></i> Черная
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="light-blue">
+                                <i class="fas fa-circle" style="color: #60a5fa;"></i> Светло-синяя
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="dark-blue">
+                                <i class="fas fa-circle" style="color: #1e40af;"></i> Темно-синяя
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="blue">
+                                <i class="fas fa-circle" style="color: #3b82f6;"></i> Синяя
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="light-green">
+                                <i class="fas fa-circle" style="color: #10b981;"></i> Светло-зеленая
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="khaki">
+                                <i class="fas fa-circle" style="color: #a3a322;"></i> Хаки
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="dark-green">
+                                <i class="fas fa-circle" style="color: #047857;"></i> Темно-зеленая
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-theme w-100 mb-2" data-theme="orange">
+                                <i class="fas fa-circle" style="color: #ff5e00;"></i> Оранжевая
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" id="applyTheme">Применить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript код -->
+    <script>
+    // Глобальная переменная для отладки
+    window.debugMode = true;
+    function logDebug(message) {
+        if (window.debugMode) {
+            console.log('[DEBUG]', message);
+        }
+    }
+    // Основной обработчик событий
+    document.addEventListener('DOMContentLoaded', function() {
+        logDebug('DOM loaded, initializing event handlers');
+
+        // Делегирование событий на весь документ
+        document.addEventListener('click', function(e) {
+            logDebug('Click event detected on:', e.target);
+
+            // Обработка кнопки "В избранное"
+            if (e.target.closest('.add-favorite') || e.target.closest('#favoriteBtn')) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const button = e.target.closest('.add-favorite') || e.target.closest('#favoriteBtn');
+                const bookId = button?.dataset?.bookId;
+
+                logDebug('Favorite button clicked, bookId:', bookId, 'button:', button);
+
+                if (!bookId) {
+                    logDebug('No bookId found in button dataset');
+                    showNotification('Ошибка: не найден ID книги', 'error');
+                    return;
+                }
+
+                if (button.id === 'favoriteBtn') {
+                    const isFavorite = button.classList.contains('btn-danger');
+                    logDebug('Toggle favorite:', bookId, isFavorite);
+                    toggleFavorite(bookId, button, isFavorite);
+                } else {
+                    logDebug('Add favorite:', bookId);
+                    addToFavorites(bookId, button);
+                }
+            }
+
+            // УНИВЕРСАЛЬНАЯ обработка кнопки "В мои книги" для всех страниц
+            if (e.target.closest('.add-to-my-books') ||
+                e.target.closest('.btn-add-to-my-books') ||
+                e.target.closest('[class*="my-books"]') ||
+                e.target.closest('[data-action="add-to-my-books"]')) {
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Ищем кнопку с data-book-id
+                const button = e.target.closest('.add-to-my-books') ||
+                              e.target.closest('.btn-add-to-my-books') ||
+                              e.target.closest('[data-book-id]');
+
+                const bookId = button?.dataset?.bookId;
+
+                logDebug('My books button clicked, bookId:', bookId, 'button class:', button?.className);
+
+                if (button && bookId) {
+                    logDebug('Add to my books clicked:', bookId, 'from button class:', button.className);
+                    showStatusModal(bookId);
+                } else {
+                    logDebug('Add to my books clicked, but no bookId found');
+                    showNotification('Ошибка: не найден ID книги', 'error');
+                }
+            }
+
+            // Обработка кнопок статуса в модальном окне
+            if (e.target.closest('.btn-status')) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const button = e.target.closest('.btn-status');
+                const status = button?.dataset?.status;
+                const bookId = button?.dataset?.bookId || getBookIdFromModal();
+
+                logDebug('Status button clicked:', status, 'bookId:', bookId);
+
+                if (bookId && status) {
+                    addToMyBooks(bookId, status);
+                } else {
+                    showNotification('Ошибка: не найден ID книги или статус', 'error');
+                }
+            }
+        });
+
+        // Инициализация системы тем
+        initThemeSystem();
+    });
+
+    // Система управления темами
+    function initThemeSystem() {
+        // Получаем тему пользователя из data-атрибута
+        const userTheme = document.body.dataset.userTheme || 'purple';
+        console.log('User theme from data attribute:', userTheme);
+
+        // Применяем тему при загрузке
+        applyTheme(userTheme);
+
+        // Инициализируем кнопки в модальном окне
+        initThemeButtons(userTheme);
+
+        // Обработка выбора темы в модальном окне
+        const themeButtons = document.querySelectorAll('.btn-theme');
+        let selectedTheme = userTheme;
+
+        themeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Удаляем активный класс у всех кнопок
+                themeButtons.forEach(btn => btn.classList.remove('active'));
+                // Добавляем активный класс текущей кнопке
+                this.classList.add('active');
+                selectedTheme = this.dataset.theme;
+            });
+        });
+
+        // Применение темы
+        document.getElementById('applyTheme').addEventListener('click', async function() {
+            if (selectedTheme) {
+                await applyAndSaveTheme(selectedTheme);
+
+                // Закрываем модальное окно
+                const modal = bootstrap.Modal.getInstance(document.getElementById('themeModal'));
+                modal.hide();
+
+                showNotification('Тема успешно применена!', 'success');
+            } else {
+                showNotification('Пожалуйста, выберите тему', 'warning');
+            }
+        });
+    }
+
+    // Инициализация активных кнопок в модальном окне
+    function initThemeButtons(currentTheme) {
+        const themeButtons = document.querySelectorAll('.btn-theme');
+
+        themeButtons.forEach(button => {
+            if (button.dataset.theme === currentTheme) {
+                button.classList.add('active');
+            }
+        });
+    }
+
+    // Применение и сохранение темы
+    async function applyAndSaveTheme(theme) {
+        console.log('Applying and saving theme:', theme);
+
+        // Применяем тему сразу
+        applyTheme(theme);
+
+        // Сохраняем в localStorage
+        localStorage.setItem('book_theme', theme);
+
+        // Сохраняем на сервер (если пользователь авторизован)
+        try {
+            const response = await fetch('/api/обновить-тему', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ theme: theme })
+            });
+
+            const result = await response.json();
+            console.log('Theme saved to server:', result);
+        } catch (error) {
+            console.error('Error saving theme to server:', error);
+        }
+    }
+
+    // Применение темы (только визуально)
+    function applyTheme(theme) {
+        console.log('Applying theme:', theme);
+
+        // Удаляем все классы тем
+        document.body.classList.remove(
+            'theme-pink', 'theme-black', 'theme-light-blue',
+            'theme-dark-blue', 'theme-blue', 'theme-light-green',
+            'theme-khaki', 'theme-dark-green', 'theme-orange'
+        );
+
+        // Добавляем класс выбранной темы (кроме дефолтной)
+        if (theme !== 'purple') {
+            document.body.classList.add(`theme-${theme}`);
+        }
+    }
+
+    // Функция для получения bookId из модального окна
+    function getBookIdFromModal() {
+        const modal = document.getElementById('statusModal');
+        if (modal) {
+            const buttons = modal.querySelectorAll('.btn-status');
+            if (buttons.length > 0) {
+                return buttons[0].dataset.bookId;
+            }
+        }
+        return null;
+    }
+
+    // Функция для добавления в избранное (для карточек книг)
+    async function addToFavorites(bookId, button) {
+        try {
+            logDebug('Adding to favorites:', bookId);
+
+            const response = await fetch(`/api/избранное/${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+
+            logDebug('Fetch response status:', response.status);
+
+            const result = await response.json();
+            logDebug('Add favorite response:', result);
+
+            if (result.success) {
+                button.innerHTML = '<i class="fas fa-heart"></i> В избранном';
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-primary');
+                button.disabled = true;
+                showNotification('Книга добавлена в избранное!', 'success');
+            } else {
+                showNotification(result.error || 'Ошибка при добавлении в избранное', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Ошибка при добавлении в избранное', 'error');
+        }
+    }
+
+    // Функция для переключения избранного (для страницы деталей книги)
+    async function toggleFavorite(bookId, button, isFavorite) {
+        try {
+            logDebug('Toggling favorite:', bookId, isFavorite);
+
+            const response = await fetch(`/api/избранное/${bookId}`, {
+                method: isFavorite ? 'DELETE' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+
+            logDebug('Toggle favorite response status:', response.status);
+
+            const result = await response.json();
+            logDebug('Toggle favorite result:', result);
+
+            if (result.success) {
+                if (isFavorite) {
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-outline-danger');
+                    button.innerHTML = '<i class="far fa-heart"></i> В избранное';
+                    showNotification('Книга удалена из избранного', 'info');
+                } else {
+                    button.classList.remove('btn-outline-danger');
+                    button.classList.add('btn-danger');
+                    button.innerHTML = '<i class="fas fa-heart"></i> В избранном';
+                    showNotification('Книга добавлена в избранное!', 'success');
+                }
+            } else {
+                showNotification(result.error || 'Ошибка при работе с избранным', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Ошибка при работе с избранным', 'error');
+        }
+    }
+
+    // Функция для добавления в мои книги
+    async function addToMyBooks(bookId, status) {
+        try {
+            logDebug('Adding book to my books:', bookId, status);
+
+            const response = await fetch('/api/мои-книги', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    book_id: parseInt(bookId),
+                    status: status
+                })
+            });
+
+            logDebug('Add to my books response status:', response.status);
+
+            const result = await response.json();
+            logDebug('Add to my books result:', result);
+
+            if (result.success) {
+                showNotification('Книга добавлена в вашу коллекцию!', 'success');
+
+                // УНИВЕРСАЛЬНОЕ обновление кнопок на всех страницах
+                const buttons = document.querySelectorAll(`
+                    .add-to-my-books[data-book-id="${bookId}"],
+                    .btn-add-to-my-books[data-book-id="${bookId}"],
+                    [data-book-id="${bookId}"][class*="my-books"],
+                    [data-book-id="${bookId}"][data-action="add-to-my-books"]
+                `);
+
+                logDebug('Updating buttons:', buttons.length);
+
+                buttons.forEach(button => {
+                    button.innerHTML = '<i class="fas fa-check"></i> Добавлено';
+                    button.classList.remove('btn-outline-success');
+                    button.classList.add('btn-success');
+                    button.disabled = true;
+                });
+                // Закрываем модальное окно
+                const modal = document.getElementById('statusModal');
+                if (modal) {
+                    const bsModal = bootstrap.Modal.getInstance(modal);
+                    if (bsModal) {
+                        bsModal.hide();
+                    }
+                }
+
+            } else {
+                showNotification(result.error || 'Ошибка при добавлении книги', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Ошибка при добавлении книги', 'error');
+        }
+    }
+
+    // Функция для показа модального окна выбора статуса
+    function showStatusModal(bookId) {
+        logDebug('Showing status modal for book:', bookId);
+
+        const existingModal = document.getElementById('statusModal');
+        if (existingModal) {
+            existingModal.remove();
+            logDebug('Removed existing modal');
+        }
+        // ОБНОВЛЕННЫЙ HTML ДЛЯ МОДАЛЬНОГО ОКНА
+        const modalHtml = `
+            <div class="modal fade" id="statusModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Добавить в мои книги</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Выберите статус для этой книги:</p>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-status" data-status="want_to_read" data-book-id="${bookId}">
+                                    <i class="fas fa-bookmark"></i> Хочу прочитать
+                                </button>
+                                <button type="button" class="btn btn-status" data-status="reading" data-book-id="${bookId}">
+                                    <i class="fas fa-book-open"></i> Читаю сейчас
+                                </button>
+                                <button type="button" class="btn btn-status" data-status="read" data-book-id="${bookId}">
+                                    <i class="fas fa-check"></i> Прочитано
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        const modalElement = document.getElementById('statusModal');
+
+        if (!modalElement) {
+            logDebug('Failed to create modal element');
+            return;
+        }
+
+        const modal = new bootstrap.Modal(modalElement);
+
+        modalElement.addEventListener('hidden.bs.modal', function() {
+            logDebug('Modal hidden, removing');
+            this.remove();
+        });
+
+        modal.show();
+        logDebug('Modal shown');
+    }
+
+    // Функция для показа уведомлений
+    function showNotification(message, type) {
+        logDebug('Showing notification:', message, type);
+
+        const existingAlerts = document.querySelectorAll('.alert.position-fixed');
+        existingAlerts.forEach(alert => alert.remove());
+
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type === 'success' ? 'success' : type === 'info' ? 'info' : 'danger'} alert-dismissible fade show position-fixed`;
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        document.body.appendChild(alert);
+
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.remove();
+            }
+        }, 3000);
+    }
+
+    logDebug('JavaScript loaded successfully - using universal event delegation');
+
+    // Обработка удаления из избранного
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-favorite')) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const button = e.target.closest('.remove-favorite');
+            const bookId = button.dataset.bookId;
+            console.log('Remove favorite clicked:', bookId);
+            removeFromFavorites(bookId, button);
+        }
+
+        // Обработка удаления из коллекции (мои книги)
+        if (e.target.closest('.remove-from-collection')) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const button = e.target.closest('.remove-from-collection');
+            const bookId = button.dataset.bookId;
+            const status = button.dataset.status;
+            console.log('Remove from collection clicked:', bookId, status);
+            removeFromCollection(bookId, status, button);
+        }
+    });
+
+    // Функция удаления из избранного
+    async function removeFromFavorites(bookId, button) {
+        if (!confirm('Вы уверены, что хотите удалить книгу из избранного?')) {
+            return;
+        }
+
+        try {
+            console.log('Removing from favorites:', bookId);
+
+            const response = await fetch(`/api/избранное/${bookId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+
+            const result = await response.json();
+            console.log('Remove favorite result:', result);
+
+            if (result.success) {
+                showNotification('Книга удалена из избранного', 'success');
+                // Удаляем карточку книги из DOM
+                const card = button.closest('.col-md-6');
+                if (card) {
+                    card.remove();
+                    // Обновляем счетчик во вкладке
+                    updateTabCounter('favorites-tab');
+                }
+            } else {
+                showNotification('Ошибка при удалении из избранного', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Ошибка при удалении из избранного', 'error');
+        }
+    }
+
+    // Функция удаления из коллекции (мои книги)
+    async function removeFromCollection(bookId, status, button) {
+        if (!confirm('Вы уверены, что хотите удалить книгу из коллекции?')) {
+            return;
+        }
+
+        try {
+            console.log('Removing from collection:', bookId, status);
+
+            const response = await fetch('/api/удалить-из-коллекции', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    book_id: parseInt(bookId),
+                    status: status
+                })
+            });
+
+            const result = await response.json();
+            console.log('Remove from collection result:', result);
+
+            if (result.success) {
+                showNotification('Книга удалена из коллекции', 'success');
+                // Удаляем карточку книги из DOM
+                const card = button.closest('.col-md-6');
+                if (card) {
+                    card.remove();
+                    // Обновляем счетчик во вкладке
+                    updateTabCounter(getTabIdByStatus(status));
+                }
+            } else {
+                showNotification('Ошибка при удалении из коллекции: ' + (result.error || ''), 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Ошибка при удалении из коллекции', 'error');
+        }
+    }
+
+    // Функция для получения ID вкладки по статусу
+    function getTabIdByStatus(status) {
+        const statusMap = {
+            'want_to_read': 'want-to-read-tab',
+            'reading': 'reading-tab',
+            'read': 'read-tab'
+        };
+        return statusMap[status] || '';
+    }
+
+    // Функция обновления счетчика во вкладке
+    function updateTabCounter(tabId) {
+        const tab = document.getElementById(tabId);
+        if (tab) {
+            const currentCount = parseInt(tab.textContent.match(/\((\d+)\)/)?.[1] || 0);
+            const newCount = Math.max(0, currentCount - 1);
+
+            // Обновляем текст вкладки
+            const tabText = tab.innerHTML.replace(/\(\d+\)/, `(${newCount})`);
+            tab.innerHTML = tabText;
+
+            // Если книг не осталось, показываем сообщение "пусто"
+            if (newCount === 0) {
+                const tabContent = document.querySelector(`[aria-labelledby="${tabId}"]`);
+                if (tabContent) {
+                    const emptyMessage = tabContent.querySelector('.text-center');
+                    if (!emptyMessage) {
+                        const emptyHtml = `
+                            <div class="text-center py-4">
+                                <i class="fas fa-${getIconByTab(tabId)} fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">${getEmptyMessageByTab(tabId)}</p>
+                            </div>
+                        `;
+                        tabContent.innerHTML = emptyHtml;
+                    }
+                }
+            }
+        }
+    }
+
+    // Вспомогательные функции для пустых состояний
+    function getIconByTab(tabId) {
+        const icons = {
+            'favorites-tab': 'heart',
+            'want-to-read-tab': 'bookmark',
+            'reading-tab': 'book-open',
+            'read-tab': 'check'
+        };
+        return icons[tabId] || 'book';
+    }
+
+    function getEmptyMessageByTab(tabId) {
+        const messages = {
+            'favorites-tab': 'У вас пока нет избранных книг.',
+            'want-to-read-tab': 'Список книг для чтения пуст.',
+            'reading-tab': 'Вы сейчас не читаете ни одной книги.',
+            'read-tab': 'Список прочитанных книг пуст.'
+        };
+        return messages[tabId] || 'Коллекция пуста.';
+    }
+    </script>
+</body>
+</html>

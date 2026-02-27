@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Книжная система{% endblock %}
+
+{% block content %}
+<!-- Приветственная секция -->
+<div class="welcome-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Добро пожаловать, {{ user.first_name or user.login }}!</h1>
+        <p class="lead mb-0">Рады видеть вас в нашей книжной системе. Начните открывать новые книги!</p>
+    </div>
+</div>
+
+<!-- Разделитель -->
+<div class="divider"></div>
+
+<!-- Карточки функций -->
+<div class="row">
+    <div class="col-md-6 col-lg-3">
+        <a href="/книги" class="card feature-card text-center h-100">
+            <div class="card-body">
+                <div class="feature-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h5 class="card-title fw-bold">Все книги</h5>
+                <p class="card-text">Просмотр всей коллекции</p>
+            </div>
+        </a>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <a href="/рекомендации" class="card feature-card text-center h-100">
+            <div class="card-body">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h5 class="card-title fw-bold">Рекомендации</h5>
+                <p class="card-text">Персональные подборки</p>
+            </div>
+        </a>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <a href="/профиль" class="card feature-card text-center h-100">
+            <div class="card-body">
+                <div class="feature-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h5 class="card-title fw-bold">Профиль</h5>
+                <p class="card-text">Ваши настройки</p>
+            </div>
+        </a>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <a href="/telegram-bot" class="card feature-card text-center h-100">
+            <div class="card-body">
+                <div class="feature-icon">
+                    <i class="fab fa-telegram"></i>
+                </div>
+                <h5 class="card-title fw-bold">Telegram Бот</h5>
+                <p class="card-text">Общение с ботом</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Популярные книги -->
+<section class="mt-5">
+    <h2 class="mb-4"><i class="fas fa-fire"></i> Популярные книги</h2>
+    <div class="row">
+        {% for book in popular_books %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 book-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text text-muted">{{ book.author.name }}</p>
+                    {% if book.average_rating %}
+                    <div class="rating">
+                        <span class="text-warning">
+                            {% for i in range(5) %}
+                                {% if i < book.average_rating|int %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                        <small class="text-muted">({{ "%.1f"|format(book.average_rating) }})</small>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <div class="d-grid">
+                        <a href="/книги/{{ book.id }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-info-circle"></i> Подробнее
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книжная система</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 2rem;
+        }
+        .book-logo {
+            font-size: 8rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold mb-4">Добро пожаловать в книжную систему!</h1>
+                    <p class="lead mb-4">Умные рекомендации книг на основе ваших предпочтений</p>
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a href="/регистрация" class="btn btn-light btn-lg px-4 me-2">
+                            Начать читать
+                        </a>
+                        <a href="/вход" class="btn btn-outline-light btn-lg px-4">
+                            Войти
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <!-- Логотип книги -->
+                    <div class="book-logo">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Серая полоска-разделитель -->
+            <div class="divider"></div>
+            
+            <!-- Дополнительная информация -->
+            <div class="row mt-5">
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-brain fa-2x mb-3 text-warning"></i>
+                    <h5>Умные рекомендации</h5>
+                    <p class="small">Персональные подборки на основе ваших предпочтений</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-book-reader fa-2x mb-3 text-warning"></i>
+                    <h5>Обширная коллекция</h5>
+                    <p class="small">Тысячи книг различных жанров и авторов</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fab fa-telegram fa-2x mb-3 text-warning"></i>
+                    <h5>Telegram бот</h5>
+                    <p class="small">Получайте рекомендации прямо в мессенджере</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

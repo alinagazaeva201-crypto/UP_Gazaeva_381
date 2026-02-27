@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Telegram Бот - Книжная система{% endblock %}
+
+{% block content %}
+<!-- Приветственная секция -->
+<div class="welcome-section text-center mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3"><i class="fab fa-telegram"></i> Книжный Telegram Бот</h1>
+        <p class="lead mb-0">Получайте персональные рекомендации книг прямо в Telegram!</p>
+    </div>
+</div>
+
+<!-- Разделитель -->
+<div class="divider mb-5"></div>
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fab fa-telegram"></i>
+                </div>
+                <h3>Ваш книжный помощник в Telegram</h3>
+                <p class="mb-0 opacity-75">Умные рекомендации всегда под рукой</p>
+            </div>
+            <div class="auth-body">
+                <!-- Основная информация -->
+                <div class="text-center mb-5">
+                    <div class="book-logo mb-4">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">Чат с книжным экспертом</h2>
+                    <p class="lead text-muted">
+                        Наш AI-помощник подберет книги именно для вас на основе ваших предпочтений
+                    </p>
+                </div>
+
+                <!-- Возможности бота -->
+                <div class="row mb-5">
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card text-center h-100">
+                            <div class="card-body">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">AI Помощник</h5>
+                                <p class="card-text text-muted">Умные рекомендации на основе ваших предпочтений и истории чтения</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card text-center h-100">
+                            <div class="card-body">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Поиск книг</h5>
+                                <p class="card-text text-muted">Быстрый поиск по автору, названию, жанру или ключевым словам</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card text-center h-100">
+                            <div class="card-body">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-random"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Случайные книги</h5>
+                                <p class="card-text text-muted">Откройте для себя новые интересные книги из нашей коллекции</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card text-center h-100">
+                            <div class="card-body">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Интерактивный чат</h5>
+                                <p class="card-text text-muted">Общайтесь с ботом как с настоящим книжным экспертом</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопка для перехода в бота -->
+                <div class="text-center mb-5">
+                    <a href="https://t.me/MyReads25Bot" class="btn btn-telegram btn-lg mb-3" target="_blank">
+                        <i class="fab fa-telegram me-2"></i> Начать общение с ботом
+                    </a>
+                    <p class="text-muted small mt-2">
+                        Нажмите кнопку выше, чтобы перейти в Telegram и начать общение
+                    </p>
+                </div>
+
+                <!-- QR код для быстрого перехода -->
+                <div class="text-center p-4 bg-light rounded mb-5">
+                    <h5 class="fw-bold mb-3">Быстрый доступ через QR-код</h5>
+                    <div class="bg-white p-3 d-inline-block border rounded">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://t.me/MyReads25Bot" 
+                               alt="QR Code для Telegram бота" class="img-fluid">
+                    </div>
+                    <p class="text-muted small mt-3">Отсканируйте QR-код камерой телефона</p>
+                </div>
+
+                <!-- Инструкция -->
+                <div class="instruction-section">
+                    <h5 class="fw-bold text-center mb-4">Как начать пользоваться ботом:</h5>
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="step-number">1</div>
+                            <p class="fw-semibold">Перейдите в бота</p>
+                            <p class="small text-muted">Нажмите кнопку выше или отсканируйте QR-код</p>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="step-number">2</div>
+                            <p class="fw-semibold">Запустите бота</p>
+                            <p class="small text-muted">Отправьте команду /start для активации</p>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="step-number">3</div>
+                            <p class="fw-semibold">Используйте меню</p>
+                            <p class="small text-muted">Выбирайте функции через удобное меню</p>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="step-number">4</div>
+                            <p class="fw-semibold">Общайтесь</p>
+                            <p class="small text-muted">Задавайте вопросы книжному помощнику</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    overflow: hidden;
+}
+.auth-header {
+    background: var(--primary-gradient); /* ИЗМЕНЕНО: использование CSS переменной */
+    color: white;
+    padding: 2.5rem;
+    text-align: center;
+}
+.auth-body {
+    padding: 2.5rem;
+}
+.auth-logo {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+.book-logo {
+    font-size: 4rem;
+    color: var(--primary-color); /* ИЗМЕНЕНО: использование CSS переменной */
+    margin-bottom: 1rem;
+}
+.feature-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 1.5rem;
+    height: 100%;
+}
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+.feature-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color); /* ИЗМЕНЕНО: использование CSS переменной */
+    margin-bottom: 1rem;
+}
+.btn-telegram {
+    background: var(--primary-gradient); /* ИЗМЕНЕНО: использование CSS переменной */
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    transition: all 0.3s ease;
+}
+.btn-telegram:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-gradient); /* ИЗМЕНЕНО: использование CSS переменной */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-weight: bold;
+}
+.instruction-section {
+    background: rgba(102, 126, 234, 0.05);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+.welcome-section {
+    background: var(--primary-gradient); /* ИЗМЕНЕНО: использование CSS переменной */
+    color: white;
+    padding: 2rem 0;
+    margin: -2rem -2rem 2rem -2rem;
+    border-radius: 0 0 20px 20px;
+}
+.divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent); /* ИЗМЕНЕНО: использование CSS переменной */
+    margin: 2rem 0;
+}
+</style>
+{% endblock %}

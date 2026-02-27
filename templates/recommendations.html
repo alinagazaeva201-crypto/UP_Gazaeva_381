@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Рекомендации - Книжная система{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-robot"></i> Персональные рекомендации</h2>
+
+{% if recommendations %}
+<p class="text-muted mb-4">Мы подобрали эти книги специально для вас на основе ваших предпочтений и истории чтения.</p>
+
+<div class="row">
+    {% for book in recommendations %}
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 book-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text text-muted">{{ book.author.name }}</p>
+                {% if book.average_rating %}
+                <div class="rating">
+                    <span class="text-warning">
+                        {% for i in range(5) %}
+                            {% if i < book.average_rating|int %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                    <small class="text-muted">({{ "%.1f"|format(book.average_rating) }})</small>
+                </div>
+                {% endif %}
+                {% if book.genres %}
+                <div class="mt-2">
+                    {% for genre in book.genres[:2] %}
+                    <span class="badge bg-secondary me-1">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <div class="d-grid">
+                    <a href="/книги/{{ book.id }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-info-circle"></i> Подробнее
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <h4><i class="fas fa-info-circle"></i> Пока нет рекомендаций</h4>
+    <p>Добавьте книги в избранное или начните читать, чтобы получать персональные рекомендации!</p>
+    <a href="/книги" class="btn btn-primary">Найти книги</a>
+</div>
+{% endif %}
+{% endblock %}

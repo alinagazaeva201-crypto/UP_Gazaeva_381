@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+{% block title %}Профиль - Книжная система{% endblock %}
+{% block content %}
+<!-- Приветственная секция -->
+<div class="welcome-section text-center mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Мой профиль</h1>
+        <p class="lead mb-0">Управляйте вашей книжной коллекцией</p>
+    </div>
+</div>
+<!-- Разделитель -->
+<div class="divider mb-5"></div>
+<div class="row">
+    <!-- Информация о пользователе -->
+    <div class="col-md-4 mb-4">
+        <div class="card auth-card">
+            <div class="auth-header text-center">
+                <h4 class="mb-3">Информация о профиле</h4>
+            </div>
+            <div class="auth-body">
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-user-circle fa-3x me-3" style="color: var(--primary-color);"></i>
+                        <div class="text-start">
+                            <h5 class="mb-1">
+                                {% if user.first_name and user.last_name %}
+                                    {{ user.first_name }} {{ user.last_name }}
+                                {% elif user.first_name %}
+                                    {{ user.first_name }}
+                                {% else %}
+                                    {{ user.login }}
+                                {% endif %}
+                            </h5>
+                            <p class="mb-0 text-muted small">Участник</p>
+                        </div>
+                    </div>
+                    
+                    <div class="user-info-details">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-envelope me-2 text-muted"></i>
+                            <span>{{ user.email or 'Email не указан' }}</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-calendar-alt me-2 text-muted"></i>
+                            <span>С {{ user.created_at.strftime('%d.%m.%Y') }}</span>
+                        </div>
+                        {% if user.telegram_id %}
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fab fa-telegram me-2 text-muted"></i>
+                            <span>Telegram подключен</span>
+                        </div>
+                        {% endif %}
+                        {% if user.last_login %}
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-clock me-2 text-muted"></i>
+                            <span>Последний вход: {{ user.last_login.strftime('%d.%m.%Y %H:%M') }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#themeModal">
+                        <i class="fas fa-palette"></i> Настройки темы
+                    </a>
+                    <a href="/редактировать-профиль" class="btn btn-outline-primary">
+                        <i class="fas fa-edit"></i> Редактировать профиль
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Коллекции книг -->
+    <div class="col-md-8">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <h4 class="mb-0">Моя книжная коллекция</h4>
+            </div>
+            <div class="auth-body">
+                <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="favorites-tab" data-bs-toggle="tab" data-bs-target="#favorites" type="button">
+                            <i class="fas fa-heart"></i> Избранное ({{ favorite_books|length }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="want-to-read-tab" data-bs-toggle="tab" data-bs-target="#want-to-read" type="button">
+                            <i class="fas fa-bookmark"></i> Хочу прочитать ({{ want_to_read_books|length }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reading-tab" data-bs-toggle="tab" data-bs-target="#reading" type="button">
+                            <i class="fas fa-book-open"></i> Читаю сейчас ({{ reading_books|length }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="read-tab" data-bs-toggle="tab" data-bs-target="#read" type="button">
+                            <i class="fas fa-check"></i> Прочитано ({{ read_books|length }})
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content mt-4" id="profileTabsContent">
+                    <!-- Избранное -->
+                    <div class="tab-pane fade show active" id="favorites" role="tabpanel">
+                        {% if favorite_books %}
+                        <div class="row">
+                            {% for book in favorite_books %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card book-card">
+                                    <div class="card-body">
+                                        <h6 class="card-title fw-bold">{{ book.title }}</h6>
+                                        <p class="card-text text-muted small mb-2">{{ book.author.name }}</p>
+                                        <div class="d-flex gap-2">
+                                            <a href="/книги/{{ book.id }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-info-circle"></i> Подробнее
+                                            </a>
+                                            <button class="btn btn-outline-danger btn-sm remove-favorite" data-book-id="{{ book.id }}">
+                                                <i class="fas fa-trash"></i> Удалить
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-heart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">У вас пока нет избранных книг.</p>
+                            <a href="/книги" class="btn btn-primary">Найти книги</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <!-- Хочу прочитать -->
+                    <div class="tab-pane fade" id="want-to-read" role="tabpanel">
+                        {% if want_to_read_books %}
+                        <div class="row">
+                            {% for book in want_to_read_books %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card book-card">
+                                    <div class="card-body">
+                                        <h6 class="card-title fw-bold">{{ book.title }}</h6>
+                                        <p class="card-text text-muted small mb-2">{{ book.author.name }}</p>
+                                        <div class="d-flex gap-2">
+                                            <a href="/книги/{{ book.id }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-info-circle"></i> Подробнее
+                                            </a>
+                                            <button class="btn btn-outline-danger btn-sm remove-from-collection" data-book-id="{{ book.id }}" data-status="want_to_read">
+                                                <i class="fas fa-trash"></i> Удалить
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-bookmark fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Список книг для чтения пуст.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <!-- Читаю сейчас -->
+                    <div class="tab-pane fade" id="reading" role="tabpanel">
+                        {% if reading_books %}
+                        <div class="row">
+                            {% for book in reading_books %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card book-card">
+                                    <div class="card-body">
+                                        <h6 class="card-title fw-bold">{{ book.title }}</h6>
+                                        <p class="card-text text-muted small mb-2">{{ book.author.name }}</p>
+                                        <div class="d-flex gap-2">
+                                            <a href="/книги/{{ book.id }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-info-circle"></i> Подробнее
+                                            </a>
+                                            <button class="btn btn-outline-danger btn-sm remove-from-collection" data-book-id="{{ book.id }}" data-status="reading">
+                                                <i class="fas fa-trash"></i> Удалить
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Вы сейчас не читаете ни одной книги.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <!-- Прочитано -->
+                    <div class="tab-pane fade" id="read" role="tabpanel">
+                        {% if read_books %}
+                        <div class="row">
+                            {% for book in read_books %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card book-card">
+                                    <div class="card-body">
+                                        <h6 class="card-title fw-bold">{{ book.title }}</h6>
+                                        <p class="card-text text-muted small mb-2">{{ book.author.name }}</p>
+                                        <div class="d-flex gap-2">
+                                            <a href="/книги/{{ book.id }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-info-circle"></i> Подробнее
+                                            </a>
+                                            <button class="btn btn-outline-danger btn-sm remove-from-collection" data-book-id="{{ book.id }}" data-status="read">
+                                                <i class="fas fa-trash"></i> Удалить
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-check fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Список прочитанных книг пуст.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.auth-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    overflow: hidden;
+    height: 100%;
+}
+.auth-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+}
+.auth-body {
+    padding: 1.5rem;
+}
+.book-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    height: 100%;
+}
+.book-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+}
+.nav-tabs .nav-link.active {
+    color: #495057;
+    border-bottom: 3px solid var(--primary-color);
+    background: transparent;
+}
+.welcome-section {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 2rem 0;
+    margin: -2rem -2rem 2rem -2rem;
+    border-radius: 0 0 20px 20px;
+}
+.divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-gradient), transparent);
+    margin: 2rem 0;
+}
+.user-info-details {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+.user-info-details div {
+    padding: 0.3rem 0;
+}
+</style>
+{% endblock %}
+{% block scripts %}
+<script>
+// Функция для показа уведомлений
+function showNotification(message, type) {
+    const existingAlerts = document.querySelectorAll('.alert.position-fixed');
+    existingAlerts.forEach(alert => alert.remove());
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+    alert.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alert);
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.remove();
+        }
+    }, 3000);
+}
+</script>
+{% endblock %}
