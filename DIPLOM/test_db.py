@@ -2,7 +2,6 @@ import sys
 import os
 from sqlalchemy import create_engine, text
 
-# Настройки из вашего .env
 DATABASE_URL = "postgresql://postgres:123qwe@localhost:5432/book_recommendation_system"
 
 def test_connection():
@@ -13,7 +12,6 @@ def test_connection():
             print("✅ Подключение к PostgreSQL успешно!")
             print(f"📊 Версия PostgreSQL: {result.fetchone()[0]}")
             
-            # Проверим существующие таблицы
             result = conn.execute(text("""
                 SELECT table_name 
                 FROM information_schema.tables 
