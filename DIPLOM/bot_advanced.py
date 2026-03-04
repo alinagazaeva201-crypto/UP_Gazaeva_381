@@ -6,10 +6,8 @@ import re
 import random
 from dotenv import load_dotenv
 
-# Загружаем переменные окружения
 load_dotenv()
 
-# Конфигурация
 BOT_TOKEN = os.getenv("BOT_TOKEN", "7738004937:AAGLA3OGzuZ6rgXJoSLwrvqEu4yoWGdigNI")
 API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
@@ -21,7 +19,6 @@ class AdvancedBookBot:
         self.user_states = {}
         self.chat_history = {}
 
-        # База знаний книг
         self.books_knowledge_base = {
             "любовные романы": [
                 {"title": "Гордость и предубеждение", "author": "Джейн Остин", "available": True},
@@ -52,7 +49,6 @@ class AdvancedBookBot:
             ]
         }
 
-        # База данных авторов
         self.authors_knowledge_base = {
     "Пушкин Александр Сергеевич": [
         {
