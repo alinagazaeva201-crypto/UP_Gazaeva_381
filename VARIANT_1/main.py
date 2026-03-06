@@ -3,18 +3,17 @@ from tkinter import messagebox, ttk
 import psycopg2
 from datetime import datetime
 
-# Настройки подключения к БД (ИЗМЕНИТЕ ПОД СВОИ)
 DB_CONFIG = {
     'dbname': 'repair_service',
     'user': 'postgres',
-    'password': '123qwe',  # Смените на свой пароль
+    'password': '123qwe',
     'host': 'localhost',
     'port': '5432'
 }
 
 class RepairServiceApp:
     def __init__(self):
-        # Настройка главного окна
+        
         ctk.set_appearance_mode("light")
         ctk.set_default_color_theme("green")
         
@@ -22,16 +21,12 @@ class RepairServiceApp:
         self.window.title("Учет заявок на ремонт бытовой техники v1.0")
         self.window.geometry("1300x650")
         
-        # Подключение к БД
         self.connect_to_db()
         
-        # Создание интерфейса
         self.create_widgets()
         
-        # Загрузка данных
         self.load_requests()
         
-        # Запуск приложения
         self.window.mainloop()
     
     def connect_to_db(self):
@@ -51,7 +46,7 @@ class RepairServiceApp:
     
     def create_widgets(self):
         """Создание интерфейса"""
-        # Заголовок
+
         title_label = ctk.CTkLabel(
             self.window, 
             text="СИСТЕМА УЧЕТА ЗАЯВОК НА РЕМОНТ",
@@ -59,11 +54,9 @@ class RepairServiceApp:
         )
         title_label.pack(pady=10)
         
-        # Верхняя панель с кнопками
         top_frame = ctk.CTkFrame(self.window)
         top_frame.pack(pady=10, padx=10, fill="x")
         
-        # Кнопки
         buttons = [
             ("➕ Добавить заявку", self.open_add_window, "green"),
             ("✏️ Редактировать", self.edit_request, "blue"),
@@ -83,7 +76,6 @@ class RepairServiceApp:
             )
             btn.pack(side="left", padx=5)
         
-        # Панель поиска
         search_frame = ctk.CTkFrame(top_frame)
         search_frame.pack(side="right", padx=5)
         
@@ -101,27 +93,22 @@ class RepairServiceApp:
             width=80
         ).pack(side="left")
         
-        # Таблица для отображения заявок
         columns = ('ID', 'Клиент', 'Телефон', 'Тип', 'Модель', 'Проблема', 'Статус', 'Мастер', 'Дата')
         self.tree = ttk.Treeview(self.window, columns=columns, show='headings', height=20)
         
-        # Настройка колонок
         widths = [50, 150, 120, 100, 120, 200, 100, 120, 100]
         for col, width in zip(columns, widths):
             self.tree.heading(col, text=col)
             self.tree.column(col, width=width)
         
-        # Скроллбары
         v_scrollbar = ttk.Scrollbar(self.window, orient="vertical", command=self.tree.yview)
         h_scrollbar = ttk.Scrollbar(self.window, orient="horizontal", command=self.tree.xview)
         self.tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
         
-        # Размещение таблицы и скроллбаров
         self.tree.pack(side="left", fill="both", expand=True, padx=(10,0), pady=10)
         v_scrollbar.pack(side="right", fill="y", padx=(0,10), pady=10)
         h_scrollbar.pack(side="bottom", fill="x", padx=10)
         
-        # Статус бар
         status_frame = ctk.CTkFrame(self.window, height=30)
         status_frame.pack(side="bottom", fill="x")
         
@@ -156,15 +143,12 @@ class RepairServiceApp:
             self.cursor.execute(query)
             rows = self.cursor.fetchall()
             
-            # Очищаем таблицу
             for row in self.tree.get_children():
                 self.tree.delete(row)
             
-            # Заполняем данными
             for row in rows:
                 self.tree.insert('', 'end', values=row)
             
-            # Обновляем статус
             self.status_label.configure(text="✅ Данные загружены")
             self.count_label.configure(text=f"Всего заявок: {len(rows)}")
             
@@ -211,15 +195,12 @@ class RepairServiceApp:
             self.cursor.execute(query, params)
             rows = self.cursor.fetchall()
             
-            # Очищаем таблицу
             for row in self.tree.get_children():
                 self.tree.delete(row)
             
-            # Заполняем результатами поиска
             for row in rows:
                 self.tree.insert('', 'end', values=row)
             
-            # Обновляем статус
             if rows:
                 self.status_label.configure(text=f"🔍 Найдено заявок: {len(rows)}")
                 self.count_label.configure(text=f'Результаты по запросу: "{search_text}"')
@@ -244,7 +225,6 @@ class RepairServiceApp:
         if not request_id:
             return
         
-        # Запрос подтверждения
         result = messagebox.askyesno(
             "Подтверждение удаления",
             f"Вы уверены, что хотите удалить заявку №{request_id}?\n\nЭто действие нельзя отменить!",
@@ -283,7 +263,6 @@ class RepairServiceApp:
                 messagebox.showinfo("Информация", "Нет данных о выполненных ремонтах")
                 return
             
-            # Формируем сообщение
             msg = "📊 СРЕДНЕЕ ВРЕМЯ РЕМОНТА (дни):\n\n"
             for master, count, avg in results:
                 msg += f"👨‍🔧 {master}:\n"
@@ -302,21 +281,17 @@ class RepairServiceApp:
         add_window.geometry("450x600")
         add_window.resizable(False, False)
         
-        # Делаем окно модальным
         add_window.transient(self.window)
         add_window.grab_set()
         
-        # Заголовок
         ctk.CTkLabel(
             add_window, 
             text="ДОБАВЛЕНИЕ НОВОЙ ЗАЯВКИ",
             font=("Arial", 16, "bold")
         ).pack(pady=10)
         
-        # Поля ввода
         fields = {}
         
-        # Клиент
         ctk.CTkLabel(add_window, text="ФИО клиента *").pack(pady=(10,0))
         fields['client_name'] = ctk.CTkEntry(add_window, width=350, placeholder_text="Иванов Иван Иванович")
         fields['client_name'].pack(pady=5)
@@ -329,7 +304,6 @@ class RepairServiceApp:
         fields['email'] = ctk.CTkEntry(add_window, width=350, placeholder_text="ivan@mail.ru")
         fields['email'].pack(pady=5)
         
-        # Получаем типы устройств из БД
         try:
             self.cursor.execute("SELECT type_name FROM device_types ORDER BY type_name")
             device_types = [row[0] for row in self.cursor.fetchall()]
@@ -350,7 +324,6 @@ class RepairServiceApp:
         fields['problem'] = ctk.CTkTextbox(add_window, width=350, height=100)
         fields['problem'].pack(pady=5)
         
-        # Статусы
         try:
             self.cursor.execute("SELECT status_name FROM request_statuses ORDER BY status_id")
             statuses = [row[0] for row in self.cursor.fetchall()]
@@ -363,12 +336,11 @@ class RepairServiceApp:
         if statuses:
             fields['status'].set(statuses[0])
         
-        # Подсказка
         ctk.CTkLabel(add_window, text="* - обязательные поля", text_color="gray", font=("Arial", 10)).pack(pady=5)
         
         def save_request():
             """Сохранение новой заявки"""
-            # Валидация
+          
             if not fields['client_name'].get().strip():
                 messagebox.showerror("Ошибка", "Введите ФИО клиента")
                 return
@@ -380,13 +352,12 @@ class RepairServiceApp:
                 return
             
             try:
-                # Разбираем ФИО
+    
                 name_parts = fields['client_name'].get().strip().split()
                 last_name = name_parts[0] if len(name_parts) > 0 else ""
                 first_name = name_parts[1] if len(name_parts) > 1 else ""
                 middle_name = name_parts[2] if len(name_parts) > 2 else ""
                 
-                # Проверяем, есть ли клиент
                 self.cursor.execute(
                     "SELECT client_id FROM clients WHERE phone = %s", 
                     (fields['phone'].get().strip(),)
@@ -396,7 +367,7 @@ class RepairServiceApp:
                 if client:
                     client_id = client[0]
                 else:
-                    # Добавляем нового клиента
+           
                     self.cursor.execute("""
                         INSERT INTO clients (last_name, first_name, middle_name, phone, email)
                         VALUES (%s, %s, %s, %s, %s) RETURNING client_id
@@ -407,21 +378,18 @@ class RepairServiceApp:
                     ))
                     client_id = self.cursor.fetchone()[0]
                 
-                # Получаем type_id
                 self.cursor.execute(
                     "SELECT type_id FROM device_types WHERE type_name = %s",
                     (fields['device_type'].get(),)
                 )
                 type_id = self.cursor.fetchone()[0]
                 
-                # Получаем status_id
                 self.cursor.execute(
                     "SELECT status_id FROM request_statuses WHERE status_name = %s",
                     (fields['status'].get(),)
                 )
                 status_id = self.cursor.fetchone()[0]
                 
-                # Добавляем заявку
                 self.cursor.execute("""
                     INSERT INTO repair_requests 
                     (client_id, device_type_id, device_model, problem_description, status_id, creation_date)
@@ -443,7 +411,6 @@ class RepairServiceApp:
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось сохранить заявку:\n{e}")
         
-        # Кнопки
         btn_frame = ctk.CTkFrame(add_window)
         btn_frame.pack(pady=20)
         
@@ -456,7 +423,6 @@ class RepairServiceApp:
         if not request_id:
             return
         
-        # Получаем данные заявки
         try:
             self.cursor.execute("""
                 SELECT 
@@ -475,8 +441,6 @@ class RepairServiceApp:
                 messagebox.showerror("Ошибка", "Заявка не найдена")
                 return
             
-            # Создаем окно редактирования (аналогично добавлению, но с заполненными полями)
-            # Для краткости - показываем сообщение, что функция в разработке
             messagebox.showinfo("Информация", "Редактирование будет доступно в следующей версии")
             
         except Exception as e:
