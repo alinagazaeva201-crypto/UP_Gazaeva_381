@@ -68,7 +68,7 @@ INSERT INTO clients (last_name, first_name, middle_name, phone, email) VALUES
     ('Петрова', 'Мария', 'Сергеевна', '+7(905)555-55-55', 'petrova@yandex.ru'),
     ('Сидоров', 'Петр', 'Алексеевич', '+7(906)666-66-66', NULL)
 ON CONFLICT (phone) DO NOTHING;
-
+ 
 INSERT INTO repair_requests (client_id, technician_id, device_type_id, device_model, problem_description, status_id, creation_date) VALUES
     (1, 1, 1, 'Samsung WW90T', 'Не сливает воду, ошибка на дисплее', 2, '2024-02-15 10:30:00'),
     (2, NULL, 2, 'LG DoorCooling+', 'Не морозит, компрессор работает постоянно', 1, '2024-02-20 14:15:00'),
