@@ -1,19 +1,9 @@
-"""
-Учет заявок на ремонт бытовой техники
-Вариант 1 - Демонстрационный экзамен
-Специальность: 09.02.07 Информационные системы и программирование
-"""
-
 import customtkinter as ctk
 from tkinter import messagebox, ttk
 import psycopg2
 from datetime import datetime
 import re
 import hashlib
-
-# ============================================
-# КОНФИГУРАЦИЯ БАЗЫ ДАННЫХ
-# ============================================
 
 DB_CONFIG = {
     'dbname': 'repair_service',
@@ -23,10 +13,6 @@ DB_CONFIG = {
     'port': '5432'
 }
 
-
-# ============================================
-# КЛАССЫ ДЛЯ ВАЛИДАЦИИ
-# ============================================
 
 class Validators:
     """Класс с методами валидации данных"""
@@ -66,10 +52,6 @@ class Validators:
         return hashlib.sha256(password.encode()).hexdigest()
 
 
-# ============================================
-# ОКНО ВХОДА И РЕГИСТРАЦИИ
-# ============================================
-
 class LoginWindow(ctk.CTkToplevel):
     """Окно авторизации и регистрации"""
 
@@ -83,14 +65,11 @@ class LoginWindow(ctk.CTkToplevel):
         self.geometry("400x500")
         self.resizable(False, False)
 
-        # Центрируем окно
         self.center_window()
 
-        # Делаем модальным
         self.transient(parent)
         self.grab_set()
 
-        # Создаем вкладки
         self.create_widgets()
 
     def center_window(self):
@@ -104,15 +83,13 @@ class LoginWindow(ctk.CTkToplevel):
 
     def create_widgets(self):
         """Создание вкладок входа и регистрации"""
-        # Создаем вкладки
+
         self.tabview = ctk.CTkTabview(self, width=380, height=420)
         self.tabview.pack(pady=20, padx=20)
 
-        # Вкладка входа
         self.tabview.add("Вход")
         self.create_login_tab()
 
-        # Вкладка регистрации
         self.tabview.add("Регистрация")
         self.create_register_tab()
 
@@ -120,25 +97,21 @@ class LoginWindow(ctk.CTkToplevel):
         """Создание вкладки входа"""
         tab = self.tabview.tab("Вход")
 
-        # Заголовок
         ctk.CTkLabel(
             tab,
             text="ВХОД В СИСТЕМУ",
             font=("Arial", 18, "bold")
         ).pack(pady=30)
 
-        # Поле логина
         ctk.CTkLabel(tab, text="Логин:").pack()
         self.login_username = ctk.CTkEntry(tab, width=250, placeholder_text="Введите логин")
         self.login_username.pack(pady=5)
         self.login_username.focus()
 
-        # Поле пароля
         ctk.CTkLabel(tab, text="Пароль:").pack()
         self.login_password = ctk.CTkEntry(tab, width=250, placeholder_text="••••••••", show="*")
         self.login_password.pack(pady=5)
 
-        # Кнопка входа
         ctk.CTkButton(
             tab,
             text="🔑 Войти",
@@ -147,7 +120,6 @@ class LoginWindow(ctk.CTkToplevel):
             height=35
         ).pack(pady=20)
 
-        # Информация для входа
         info_text = "Тестовые данные:\nadmin / admin123\nmanager / manager123"
         ctk.CTkLabel(
             tab,
@@ -156,66 +128,56 @@ class LoginWindow(ctk.CTkToplevel):
             text_color="gray"
         ).pack(pady=10)
 
-        # Привязка Enter
         self.login_password.bind('<Return>', lambda e: self.login())
 
     def create_register_tab(self):
         """Создание вкладки регистрации"""
         tab = self.tabview.tab("Регистрация")
 
-        # Заголовок
         ctk.CTkLabel(
             tab,
             text="РЕГИСТРАЦИЯ НОВОГО КЛИЕНТА",
             font=("Arial", 16, "bold")
         ).pack(pady=10)
 
-        # Поля для регистрации
         self.reg_fields = {}
 
-        # Логин
         ctk.CTkLabel(tab, text="Логин *").pack()
         self.reg_fields['login'] = ctk.CTkEntry(
             tab, width=250, placeholder_text="от 3 до 20 символов"
         )
         self.reg_fields['login'].pack(pady=5)
 
-        # Пароль
         ctk.CTkLabel(tab, text="Пароль *").pack()
         self.reg_fields['password'] = ctk.CTkEntry(
             tab, width=250, placeholder_text="минимум 6 символов", show="*"
         )
         self.reg_fields['password'].pack(pady=5)
 
-        # Подтверждение пароля
         ctk.CTkLabel(tab, text="Подтвердите пароль *").pack()
         self.reg_fields['password_confirm'] = ctk.CTkEntry(
             tab, width=250, placeholder_text="повторите пароль", show="*"
         )
         self.reg_fields['password_confirm'].pack(pady=5)
 
-        # ФИО
         ctk.CTkLabel(tab, text="ФИО *").pack()
         self.reg_fields['full_name'] = ctk.CTkEntry(
             tab, width=250, placeholder_text="Иванов Иван Иванович"
         )
         self.reg_fields['full_name'].pack(pady=5)
 
-        # Телефон
         ctk.CTkLabel(tab, text="Телефон *").pack()
         self.reg_fields['phone'] = ctk.CTkEntry(
             tab, width=250, placeholder_text="+7(999)123-45-67"
         )
         self.reg_fields['phone'].pack(pady=5)
 
-        # Email
         ctk.CTkLabel(tab, text="Email").pack()
         self.reg_fields['email'] = ctk.CTkEntry(
             tab, width=250, placeholder_text="email@example.com"
         )
         self.reg_fields['email'].pack(pady=5)
 
-        # Кнопка регистрации
         ctk.CTkButton(
             tab,
             text="📝 Зарегистрироваться",
@@ -225,7 +187,6 @@ class LoginWindow(ctk.CTkToplevel):
             fg_color="green"
         ).pack(pady=15)
 
-        # Подсказка
         ctk.CTkLabel(
             tab,
             text="* - обязательные поля",
@@ -246,13 +207,11 @@ class LoginWindow(ctk.CTkToplevel):
             return
 
         try:
-            # Откатываем предыдущую транзакцию
+
             self.db_manager.cursor.execute("ROLLBACK")
             
-            # Хешируем пароль
             password_hash = Validators.hash_password(password)
 
-            # Ищем пользователя
             query = """
                 SELECT u.user_id, u.username, r.role_name, 
                        c.client_id, c.last_name, c.first_name
@@ -265,7 +224,7 @@ class LoginWindow(ctk.CTkToplevel):
             user = self.db_manager.cursor.fetchone()
 
             if user:
-                # Обновляем время последнего входа
+
                 self.db_manager.cursor.execute(
                     "UPDATE users SET last_login = %s WHERE user_id = %s",
                     (datetime.now(), user[0])
@@ -286,13 +245,12 @@ class LoginWindow(ctk.CTkToplevel):
 
     def register(self):
         """Регистрация нового клиента"""
-        # Откатываем предыдущую транзакцию
+
         try:
             self.db_manager.cursor.execute("ROLLBACK")
         except:
             pass
 
-        # Получаем данные
         login = self.reg_fields['login'].get().strip()
         password = self.reg_fields['password'].get().strip()
         password_confirm = self.reg_fields['password_confirm'].get().strip()
@@ -300,7 +258,6 @@ class LoginWindow(ctk.CTkToplevel):
         phone = self.reg_fields['phone'].get().strip()
         email = self.reg_fields['email'].get().strip()
 
-        # Валидация
         if not all([login, password, password_confirm, full_name, phone]):
             messagebox.showerror("Ошибка", "Заполните все обязательные поля")
             return
@@ -320,7 +277,6 @@ class LoginWindow(ctk.CTkToplevel):
             messagebox.showerror("Ошибка", "Пароли не совпадают")
             return
 
-        # Разбор ФИО
         name_parts = full_name.split()
         if len(name_parts) < 2:
             messagebox.showerror("Ошибка", "Введите полное ФИО (Имя Фамилия)")
@@ -343,10 +299,9 @@ class LoginWindow(ctk.CTkToplevel):
             return
 
         try:
-            # Начинаем транзакцию
+
             self.db_manager.cursor.execute("BEGIN")
 
-            # Проверяем, не занят ли логин
             self.db_manager.cursor.execute(
                 "SELECT user_id FROM users WHERE username = %s",
                 (login,)
@@ -356,7 +311,6 @@ class LoginWindow(ctk.CTkToplevel):
                 self.db_manager.cursor.execute("ROLLBACK")
                 return
 
-            # Проверяем, не занят ли телефон
             self.db_manager.cursor.execute(
                 "SELECT client_id FROM clients WHERE phone = %s",
                 (phone,)
@@ -366,23 +320,19 @@ class LoginWindow(ctk.CTkToplevel):
                 self.db_manager.cursor.execute("ROLLBACK")
                 return
 
-            # Создаем клиента
             self.db_manager.cursor.execute("""
                 INSERT INTO clients (last_name, first_name, middle_name, phone, email)
                 VALUES (%s, %s, %s, %s, %s) RETURNING client_id
             """, (last_name, first_name, middle_name, phone, email or None))
             client_id = self.db_manager.cursor.fetchone()[0]
 
-            # Получаем ID роли "Клиент"
             self.db_manager.cursor.execute(
                 "SELECT role_id FROM roles WHERE role_name = 'Клиент'"
             )
             role_id = self.db_manager.cursor.fetchone()[0]
 
-            # Хешируем пароль
             password_hash = Validators.hash_password(password)
 
-            # Создаем пользователя
             self.db_manager.cursor.execute("""
                 INSERT INTO users (username, password_hash, role_id, client_id)
                 VALUES (%s, %s, %s, %s)
@@ -395,7 +345,6 @@ class LoginWindow(ctk.CTkToplevel):
                 "Регистрация прошла успешно!\nТеперь вы можете войти в систему."
             )
 
-            # Очищаем поля и переключаемся на вкладку входа
             for field in self.reg_fields.values():
                 field.delete(0, 'end')
             self.tabview.set("Вход")
@@ -405,34 +354,25 @@ class LoginWindow(ctk.CTkToplevel):
             messagebox.showerror("Ошибка", f"Не удалось зарегистрироваться:\n{e}")
 
 
-# ============================================
-# ГЛАВНОЕ ОКНО ПРИЛОЖЕНИЯ
-# ============================================
-
 class RepairServiceApp:
     """Главное окно приложения"""
 
     def __init__(self):
-        # Настройка внешнего вида
+    
         ctk.set_appearance_mode("light")
         ctk.set_default_color_theme("green")
 
-        # Создание главного окна
         self.window = ctk.CTk()
         self.window.title("Учет заявок на ремонт бытовой техники v1.0")
         self.window.geometry("1300x650")
 
-        # Подключение к БД
         self.connect_to_db()
 
-        # Текущий пользователь
         self.current_user = None
 
-        # Скрываем главное окно и показываем окно входа
         self.window.withdraw()
         self.show_login()
 
-        # Запуск приложения
         self.window.mainloop()
 
     def connect_to_db(self):
@@ -458,7 +398,7 @@ class RepairServiceApp:
 
     def on_login_success(self, user_data):
         """Callback после успешного входа"""
-        # user_data = (user_id, username, role_name, client_id, last_name, first_name)
+
         self.current_user = {
             'id': user_data[0],
             'username': user_data[1],
@@ -467,16 +407,12 @@ class RepairServiceApp:
             'client_name': f"{user_data[4]} {user_data[5]}" if user_data[4] else None
         }
         
-        # Показываем главное окно
         self.window.deiconify()
         
-        # Создаем интерфейс
         self.create_widgets()
         
-        # Загружаем данные
         self.load_requests()
         
-        # Приветствие
         self.status_label.configure(
             text=f"Добро пожаловать, {self.current_user['username']}! "
                  f"Роль: {self.current_user['role']}"
@@ -484,7 +420,7 @@ class RepairServiceApp:
 
     def create_widgets(self):
         """Создание интерфейса"""
-        # Заголовок
+
         title_label = ctk.CTkLabel(
             self.window,
             text="СИСТЕМА УЧЕТА ЗАЯВОК НА РЕМОНТ",
@@ -492,13 +428,11 @@ class RepairServiceApp:
         )
         title_label.pack(pady=10)
 
-        # Верхняя панель с кнопками
         top_frame = ctk.CTkFrame(self.window)
         top_frame.pack(pady=10, padx=10, fill="x")
 
-        # Кнопки в зависимости от роли
         if self.current_user['role'] in ['Администратор', 'Менеджер']:
-            # Админ и менеджер видят все кнопки
+
             buttons = [
                 ("➕ Добавить заявку", self.open_add_window, "green"),
                 ("✏️ Редактировать", self.open_edit_window, "blue"),
@@ -509,7 +443,7 @@ class RepairServiceApp:
             if self.current_user['role'] == 'Администратор':
                 buttons.append(("👥 Клиенты", self.open_clients_window, "orange"))
         else:
-            # Клиент видит только добавление и свои заявки
+
             buttons = [
                 ("➕ Новая заявка", self.open_add_window, "green"),
                 ("🔄 Обновить", self.load_requests, "gray"),
@@ -526,7 +460,6 @@ class RepairServiceApp:
             )
             btn.pack(side="left", padx=5)
 
-        # Кнопка выхода
         ctk.CTkButton(
             top_frame,
             text="🚪 Выйти",
@@ -535,7 +468,6 @@ class RepairServiceApp:
             width=80
         ).pack(side="right", padx=5)
 
-        # Информация о пользователе
         user_text = f"👤 {self.current_user['username']} ({self.current_user['role']})"
         ctk.CTkLabel(
             top_frame,
@@ -543,7 +475,6 @@ class RepairServiceApp:
             font=("Arial", 12, "bold")
         ).pack(side="right", padx=10)
 
-        # Панель поиска (только для админа и менеджера)
         if self.current_user['role'] in ['Администратор', 'Менеджер']:
             search_frame = ctk.CTkFrame(top_frame)
             search_frame.pack(side="right", padx=5)
@@ -562,27 +493,22 @@ class RepairServiceApp:
                 width=80
             ).pack(side="left")
 
-        # Таблица для отображения заявок
         columns = ('ID', 'Клиент', 'Телефон', 'Тип', 'Модель', 'Проблема', 'Статус', 'Мастер', 'Дата')
         self.tree = ttk.Treeview(self.window, columns=columns, show='headings', height=20)
 
-        # Настройка ширины колонок
         widths = [50, 150, 120, 100, 120, 200, 100, 120, 100]
         for col, width in zip(columns, widths):
             self.tree.heading(col, text=col)
             self.tree.column(col, width=width)
 
-        # Скроллбары
         v_scrollbar = ttk.Scrollbar(self.window, orient="vertical", command=self.tree.yview)
         h_scrollbar = ttk.Scrollbar(self.window, orient="horizontal", command=self.tree.xview)
         self.tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
 
-        # Размещение таблицы
         self.tree.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
         v_scrollbar.pack(side="right", fill="y", padx=(0, 10), pady=10)
         h_scrollbar.pack(side="bottom", fill="x", padx=10)
 
-        # Статусная строка
         status_frame = ctk.CTkFrame(self.window, height=30)
         status_frame.pack(side="bottom", fill="x")
 
@@ -598,18 +524,17 @@ class RepairServiceApp:
         if result:
             self.window.withdraw()
             self.current_user = None
-            # Очищаем таблицу
+    
             for row in self.tree.get_children():
                 self.tree.delete(row)
-            # Показываем окно входа
+   
             self.show_login()
 
     def load_requests(self):
         """Загрузка списка заявок"""
         try:
-            print(f"Загрузка заявок для роли: {self.current_user['role']}")  # Отладка
+            print(f"Загрузка заявок для роли: {self.current_user['role']}") 
             
-            # Для клиента показываем только его заявки
             if self.current_user['role'] == 'Клиент':
                 query = """
                     SELECT 
@@ -633,7 +558,7 @@ class RepairServiceApp:
                 """
                 self.cursor.execute(query, (self.current_user['client_id'],))
             else:
-                # Админ и менеджер видят ВСЕ заявки
+          
                 query = """
                     SELECT 
                         r.request_id,
@@ -656,16 +581,14 @@ class RepairServiceApp:
                 self.cursor.execute(query)
             
             rows = self.cursor.fetchall()
-            print(f"Найдено заявок: {len(rows)}")  # Отладка
+            print(f"Найдено заявок: {len(rows)}") 
             
-            # Очистка таблицы
             for row in self.tree.get_children():
                 self.tree.delete(row)
 
-            # Заполнение таблицы
             for row in rows:
                 self.tree.insert('', 'end', values=row)
-                print(f"Добавлена заявка: {row[0]} - {row[1]}")  # Отладка
+                print(f"Добавлена заявка: {row[0]} - {row[1]}") 
 
             self.status_label.configure(text="✅ Данные загружены")
             self.count_label.configure(text=f"Всего заявок: {len(rows)}")
@@ -716,11 +639,9 @@ class RepairServiceApp:
             self.cursor.execute(query, params)
             rows = self.cursor.fetchall()
 
-            # Очистка таблицы
             for row in self.tree.get_children():
                 self.tree.delete(row)
 
-            # Заполнение результатами поиска
             for row in rows:
                 self.tree.insert('', 'end', values=row)
 
@@ -747,7 +668,7 @@ class RepairServiceApp:
         if self.current_user['role'] in ['Администратор', 'Менеджер']:
             return True
         elif self.current_user['role'] == 'Клиент':
-            # Клиент может редактировать только свои заявки в статусе "Новая"
+           
             try:
                 self.cursor.execute("""
                     SELECT r.status_id, s.status_name
@@ -860,10 +781,6 @@ class RepairServiceApp:
             print("🔌 Соединение с БД закрыто")
 
 
-# ============================================
-# ОКНО ДОБАВЛЕНИЯ ЗАЯВКИ
-# ============================================
-
 class AddRequestWindow(ctk.CTkToplevel):
     """Окно для добавления новой заявки"""
 
@@ -876,7 +793,6 @@ class AddRequestWindow(ctk.CTkToplevel):
         self.geometry("450x600")
         self.resizable(False, False)
 
-        # Делаем окно модальным
         self.transient(parent)
         self.grab_set()
 
@@ -884,26 +800,23 @@ class AddRequestWindow(ctk.CTkToplevel):
 
     def create_widgets(self):
         """Создание элементов окна"""
-        # Заголовок
+
         ctk.CTkLabel(
             self,
             text="ДОБАВЛЕНИЕ НОВОЙ ЗАЯВКИ",
             font=("Arial", 16, "bold")
         ).pack(pady=10)
 
-        # Поля ввода
         self.fields = {}
 
-        # Для клиента автоматически подставляем его данные
         if self.app.current_user['role'] == 'Клиент':
-            # ФИО клиента (нередактируемое)
+    
             ctk.CTkLabel(self, text="ФИО клиента").pack(pady=(10, 0))
             client_name = ctk.CTkEntry(self, width=350)
             client_name.insert(0, self.app.current_user['client_name'] or "")
             client_name.configure(state="disabled")
             client_name.pack(pady=5)
 
-            # Телефон (нередактируемый)
             ctk.CTkLabel(self, text="Телефон").pack()
             client_phone = ctk.CTkEntry(self, width=350)
             self.app.cursor.execute(
@@ -918,40 +831,34 @@ class AddRequestWindow(ctk.CTkToplevel):
 
             self.fields['client_id'] = self.app.current_user['client_id']
         else:
-            # Для админа/менеджера - выбор клиента
+
             ctk.CTkLabel(self, text="Выберите клиента *").pack(pady=(10, 0))
             self.load_clients()
             self.fields['client_combo'].pack(pady=5)
 
-        # Тип устройства
         ctk.CTkLabel(self, text="Тип устройства *").pack()
         self.load_device_types()
         self.fields['device_type'].pack(pady=5)
 
-        # Модель
         ctk.CTkLabel(self, text="Модель *").pack()
         self.fields['model'] = ctk.CTkEntry(
             self, width=350, placeholder_text="Samsung WW90T"
         )
         self.fields['model'].pack(pady=5)
 
-        # Описание проблемы
         ctk.CTkLabel(self, text="Описание проблемы").pack()
         self.fields['problem'] = ctk.CTkTextbox(self, width=350, height=100)
         self.fields['problem'].pack(pady=5)
 
-        # Статус (только для админа/менеджера)
         if self.app.current_user['role'] in ['Администратор', 'Менеджер']:
             ctk.CTkLabel(self, text="Статус").pack()
             self.load_statuses()
             self.fields['status'].pack(pady=5)
 
-        # Подсказка
         ctk.CTkLabel(
             self, text="* - обязательные поля", text_color="gray", font=("Arial", 10)
         ).pack(pady=5)
 
-        # Кнопки
         btn_frame = ctk.CTkFrame(self)
         btn_frame.pack(pady=20)
 
@@ -1005,30 +912,27 @@ class AddRequestWindow(ctk.CTkToplevel):
     def save_request(self):
         """Сохранение новой заявки"""
         try:
-            # Определяем client_id
+         
             if self.app.current_user['role'] == 'Клиент':
                 client_id = self.app.current_user['client_id']
             else:
-                # Для админа/менеджера - из выпадающего списка
+             
                 selected = self.fields['client_combo'].get()
                 if not selected:
                     messagebox.showerror("Ошибка", "Выберите клиента")
                     return
                 client_id = self.fields['client_values'][selected]
 
-            # Проверка обязательных полей
             if not self.fields['model'].get().strip():
                 messagebox.showerror("Ошибка", "Введите модель устройства")
                 return
 
-            # Получение ID типа устройства
             self.app.cursor.execute(
                 "SELECT type_id FROM device_types WHERE type_name = %s",
                 (self.fields['device_type'].get(),)
             )
             type_id = self.app.cursor.fetchone()[0]
 
-            # Определение status_id
             if self.app.current_user['role'] in ['Администратор', 'Менеджер'] and 'status' in self.fields:
                 self.app.cursor.execute(
                     "SELECT status_id FROM request_statuses WHERE status_name = %s",
@@ -1036,13 +940,13 @@ class AddRequestWindow(ctk.CTkToplevel):
                 )
                 status_id = self.app.cursor.fetchone()[0]
             else:
-                # Для клиента статус всегда "Новая"
+         
                 self.app.cursor.execute(
                     "SELECT status_id FROM request_statuses WHERE status_name = 'Новая'"
                 )
                 status_id = self.app.cursor.fetchone()[0]
 
-            # Добавление заявки
+
             self.app.cursor.execute("""
                 INSERT INTO repair_requests 
                 (client_id, device_type_id, device_model, problem_description, status_id, creation_date)
@@ -1063,11 +967,6 @@ class AddRequestWindow(ctk.CTkToplevel):
 
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось сохранить заявку:\n{e}")
-
-
-# ============================================
-# ОКНО РЕДАКТИРОВАНИЯ ЗАЯВКИ
-# ============================================
 
 class EditRequestWindow(ctk.CTkToplevel):
     """Окно для редактирования заявки"""
@@ -1120,7 +1019,7 @@ class EditRequestWindow(ctk.CTkToplevel):
 
     def create_widgets(self):
         """Создание элементов окна"""
-        # Заголовок
+  
         ctk.CTkLabel(
             self,
             text=f"РЕДАКТИРОВАНИЕ ЗАЯВКИ №{self.request_id}",
@@ -1129,44 +1028,37 @@ class EditRequestWindow(ctk.CTkToplevel):
 
         self.fields = {}
 
-        # Информация о клиенте (только для чтения)
         ctk.CTkLabel(self, text="Клиент").pack(pady=(10, 0))
         client_info = ctk.CTkEntry(self, width=350)
         client_info.insert(0, f"{self.request_data[1]} ({self.request_data[2]})")
         client_info.configure(state="disabled")
         client_info.pack(pady=5)
 
-        # Тип устройства
         ctk.CTkLabel(self, text="Тип устройства *").pack()
         self.load_device_types()
         self.fields['device_type'].set(self.request_data[3])
         self.fields['device_type'].pack(pady=5)
 
-        # Модель
         ctk.CTkLabel(self, text="Модель *").pack()
         self.fields['model'] = ctk.CTkEntry(self, width=350)
         self.fields['model'].insert(0, self.request_data[4] or "")
         self.fields['model'].pack(pady=5)
 
-        # Описание проблемы
         ctk.CTkLabel(self, text="Описание проблемы").pack()
         self.fields['problem'] = ctk.CTkTextbox(self, width=350, height=100)
         if self.request_data[5]:
             self.fields['problem'].insert("1.0", self.request_data[5])
         self.fields['problem'].pack(pady=5)
 
-        # Статус (всегда доступен для редактирования)
         ctk.CTkLabel(self, text="Статус").pack()
         self.load_statuses()
         self.fields['status'].set(self.request_data[6])
         self.fields['status'].pack(pady=5)
 
-        # Подсказка
         ctk.CTkLabel(
             self, text="* - обязательные поля", text_color="gray", font=("Arial", 10)
         ).pack(pady=5)
 
-        # Кнопки
         btn_frame = ctk.CTkFrame(self)
         btn_frame.pack(pady=20)
 
@@ -1201,26 +1093,23 @@ class EditRequestWindow(ctk.CTkToplevel):
     def save_request(self):
         """Сохранение изменений"""
         try:
-            # Проверка обязательных полей
+          
             if not self.fields['model'].get().strip():
                 messagebox.showerror("Ошибка", "Введите модель устройства")
                 return
 
-            # Получение ID типа устройства
             self.app.cursor.execute(
                 "SELECT type_id FROM device_types WHERE type_name = %s",
                 (self.fields['device_type'].get(),)
             )
             type_id = self.app.cursor.fetchone()[0]
 
-            # Получение ID статуса
             self.app.cursor.execute(
                 "SELECT status_id FROM request_statuses WHERE status_name = %s",
                 (self.fields['status'].get(),)
             )
             status_id = self.app.cursor.fetchone()[0]
 
-            # Обновление заявки
             self.app.cursor.execute("""
                 UPDATE repair_requests 
                 SET device_type_id = %s,
@@ -1236,7 +1125,6 @@ class EditRequestWindow(ctk.CTkToplevel):
                 self.request_id
             ))
 
-            # Если статус "Выполнена", обновляем дату завершения
             if self.fields['status'].get() == 'Выполнена':
                 self.app.cursor.execute("""
                     UPDATE repair_requests 
@@ -1252,10 +1140,6 @@ class EditRequestWindow(ctk.CTkToplevel):
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось сохранить изменения:\n{e}")
 
-
-# ============================================
-# ОКНО УПРАВЛЕНИЯ КЛИЕНТАМИ
-# ============================================
 
 class ClientsWindow(ctk.CTkToplevel):
     """Отдельная форма для работы с клиентами"""
@@ -1273,14 +1157,13 @@ class ClientsWindow(ctk.CTkToplevel):
 
     def create_widgets(self):
         """Создание интерфейса"""
-        # Заголовок
+    
         ctk.CTkLabel(
             self,
             text="КЛИЕНТЫ",
             font=("Arial", 18, "bold")
         ).pack(pady=10)
 
-        # Панель кнопок
         btn_frame = ctk.CTkFrame(self)
         btn_frame.pack(fill="x", padx=10, pady=5)
 
@@ -1312,7 +1195,6 @@ class ClientsWindow(ctk.CTkToplevel):
             fg_color="gray"
         ).pack(side="right", padx=5)
 
-        # Поиск
         search_frame = ctk.CTkFrame(btn_frame)
         search_frame.pack(side="right", padx=5)
 
@@ -1328,7 +1210,6 @@ class ClientsWindow(ctk.CTkToplevel):
             width=30
         ).pack(side="left")
 
-        # Таблица клиентов
         columns = ('ID', 'Фамилия', 'Имя', 'Отчество', 'Телефон', 'Email', 'Логин')
         self.tree = ttk.Treeview(self, columns=columns, show='headings', height=15)
 
@@ -1377,11 +1258,9 @@ class ClientsWindow(ctk.CTkToplevel):
 
             rows = self.app.cursor.fetchall()
 
-            # Очистка таблицы
             for row in self.tree.get_children():
                 self.tree.delete(row)
 
-            # Заполнение таблицы
             for row in rows:
                 self.tree.insert('', 'end', values=row)
 
@@ -1419,17 +1298,14 @@ class ClientsWindow(ctk.CTkToplevel):
         dialog.transient(self)
         dialog.grab_set()
 
-        # Заголовок
         ctk.CTkLabel(
             dialog,
             text="ДАННЫЕ КЛИЕНТА",
             font=("Arial", 16, "bold")
         ).pack(pady=10)
 
-        # Поля ввода
         fields = {}
 
-        # Основная информация
         ctk.CTkLabel(dialog, text="Фамилия *").pack()
         fields['last_name'] = ctk.CTkEntry(dialog, width=350)
         fields['last_name'].pack(pady=5)
@@ -1454,7 +1330,6 @@ class ClientsWindow(ctk.CTkToplevel):
         )
         fields['email'].pack(pady=5)
 
-        # Данные для входа
         ctk.CTkLabel(dialog, text="ЛОГИН И ПАРОЛЬ", font=("Arial", 14, "bold")).pack(pady=(15, 5))
         
         ctk.CTkLabel(dialog, text="Логин").pack()
@@ -1465,10 +1340,9 @@ class ClientsWindow(ctk.CTkToplevel):
         fields['password'] = ctk.CTkEntry(dialog, width=350, placeholder_text="минимум 6 символов", show="*")
         fields['password'].pack(pady=5)
 
-        # Загрузка данных при редактировании
         if client_id:
             try:
-                # Загружаем данные клиента
+              
                 self.app.cursor.execute(
                     """SELECT last_name, first_name, middle_name, phone, email 
                        FROM clients WHERE client_id = %s""",
@@ -1482,7 +1356,6 @@ class ClientsWindow(ctk.CTkToplevel):
                     fields['phone'].insert(0, client[3] or "")
                     fields['email'].insert(0, client[4] or "")
                 
-                # Загружаем данные пользователя
                 self.app.cursor.execute(
                     "SELECT username, password_hash FROM users WHERE client_id = %s",
                     (client_id,)
@@ -1490,19 +1363,18 @@ class ClientsWindow(ctk.CTkToplevel):
                 user = self.app.cursor.fetchone()
                 if user:
                     fields['login'].insert(0, user[0] or "")
-                    # Не показываем хеш пароля
+                   
                     fields['password'].insert(0, "********")
                     
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось загрузить данные:\n{e}")
 
-        # Подсказка
         ctk.CTkLabel(
             dialog, text="* - обязательные поля", text_color="gray", font=("Arial", 10)
         ).pack(pady=5)
 
         def save():
-            # Валидация
+      
             last_name = fields['last_name'].get().strip()
             first_name = fields['first_name'].get().strip()
             phone = fields['phone'].get().strip()
@@ -1538,7 +1410,7 @@ class ClientsWindow(ctk.CTkToplevel):
                 self.app.cursor.execute("BEGIN")
 
                 if client_id:
-                    # Обновление клиента
+        
                     query = """
                         UPDATE clients 
                         SET last_name=%s, first_name=%s, middle_name=%s, phone=%s, email=%s
@@ -1552,9 +1424,8 @@ class ClientsWindow(ctk.CTkToplevel):
                     )
                     self.app.cursor.execute(query, params)
                     
-                    # Обновление пользователя
                     if password != "********":
-                        # Если пароль изменен
+                    
                         password_hash = Validators.hash_password(password)
                         query = """
                             UPDATE users 
@@ -1563,7 +1434,7 @@ class ClientsWindow(ctk.CTkToplevel):
                         """
                         self.app.cursor.execute(query, (login, password_hash, client_id))
                     else:
-                        # Только логин, пароль не меняем
+                   
                         query = """
                             UPDATE users 
                             SET username=%s
@@ -1572,7 +1443,7 @@ class ClientsWindow(ctk.CTkToplevel):
                         self.app.cursor.execute(query, (login, client_id))
                     
                 else:
-                    # Добавление клиента
+                  
                     query = """
                         INSERT INTO clients (last_name, first_name, middle_name, phone, email)
                         VALUES (%s, %s, %s, %s, %s) RETURNING client_id
@@ -1585,16 +1456,13 @@ class ClientsWindow(ctk.CTkToplevel):
                     self.app.cursor.execute(query, params)
                     client_id = self.app.cursor.fetchone()[0]
 
-                    # Получаем ID роли "Клиент"
                     self.app.cursor.execute(
                         "SELECT role_id FROM roles WHERE role_name = 'Клиент'"
                     )
                     role_id = self.app.cursor.fetchone()[0]
 
-                    # Хешируем пароль
                     password_hash = Validators.hash_password(password)
 
-                    # Создаем пользователя
                     self.app.cursor.execute("""
                         INSERT INTO users (username, password_hash, role_id, client_id)
                         VALUES (%s, %s, %s, %s)
@@ -1617,7 +1485,6 @@ class ClientsWindow(ctk.CTkToplevel):
                 self.app.conn.rollback()
                 messagebox.showerror("Ошибка", f"Не удалось сохранить:\n{e}")
 
-        # Кнопки
         btn_frame = ctk.CTkFrame(dialog)
         btn_frame.pack(pady=20)
 
@@ -1636,7 +1503,7 @@ class ClientsWindow(ctk.CTkToplevel):
             return
 
         try:
-            # Проверка наличия заявок у клиента
+           
             self.app.cursor.execute(
                 "SELECT COUNT(*) FROM repair_requests WHERE client_id = %s",
                 (client_id,)
@@ -1667,11 +1534,6 @@ class ClientsWindow(ctk.CTkToplevel):
 
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось удалить клиента:\n{e}")
-
-
-# ============================================
-# ЗАПУСК ПРИЛОЖЕНИЯ
-# ============================================
 
 if __name__ == "__main__":
     app = RepairServiceApp()
