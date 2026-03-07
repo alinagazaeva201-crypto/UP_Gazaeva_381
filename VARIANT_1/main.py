@@ -62,24 +62,84 @@ class LoginWindow(ctk.CTkToplevel):
         self.on_login_success = on_login_success
 
         self.title("Авторизация - Сервисный центр")
-        self.geometry("400x500")
+        self.geometry("520x520")
         self.resizable(False, False)
 
-        self.center_window()
 
         self.transient(parent)
         self.grab_set()
 
         self.create_widgets()
 
-    def center_window(self):
-        """Центрирование окна на экране"""
-        self.update_idletasks()
-        width = self.winfo_width()
-        height = self.winfo_height()
-        x = (self.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.winfo_screenheight() // 2) - (height // 2)
-        self.geometry(f'{width}x{height}+{x}+{y}')
+    def create_widgets(self):
+
+        main_frame = ctk.CTkFrame(self, corner_radius=15)
+        main_frame.pack(expand=True, padx=40, pady=40)
+
+        title = ctk.CTkLabel(
+            main_frame,
+            text="Система учета ремонта техники",
+            font=("Arial", 26, "bold")
+        )
+        title.pack(pady=(20, 10))
+
+        subtitle = ctk.CTkLabel(
+            main_frame,
+            text="Авторизация",
+            font=("Arial", 18)
+        )
+        subtitle.pack(pady=(0, 20))
+
+
+        ctk.CTkLabel(
+            main_frame,
+            text="Логин",
+            font=("Arial", 14)
+        ).pack(anchor="w")
+
+        self.login_username = ctk.CTkEntry(
+            main_frame,
+            width=320,
+            height=38,
+            placeholder_text="Введите логин"
+        )
+        self.login_username.pack(pady=8)
+
+
+        ctk.CTkLabel(
+            main_frame,
+            text="Пароль",
+            font=("Arial", 14)
+        ).pack(anchor="w")
+
+        self.login_password = ctk.CTkEntry(
+            main_frame,
+            width=320,
+            height=38,
+            show="*",
+            placeholder_text="Введите пароль"
+        )
+        self.login_password.pack(pady=8)
+
+
+        login_btn = ctk.CTkButton(
+            main_frame,
+            text="🔑 Войти",
+            command=self.login,
+            width=320,
+            height=40,
+            font=("Arial", 15)
+        )
+        login_btn.pack(pady=20)
+
+
+        test = ctk.CTkLabel(
+            main_frame,
+            text="Тестовый вход:\nadmin / admin123",
+            font=("Arial", 12),
+            text_color="gray"
+        )
+        test.pack(pady=10)
 
     def create_widgets(self):
         """Создание вкладок входа и регистрации"""
@@ -120,7 +180,7 @@ class LoginWindow(ctk.CTkToplevel):
             height=35
         ).pack(pady=20)
 
-        info_text = "Тестовые данные:\nadmin / admin123\nmanager / manager123"
+        info_text = "Тестовые данные:\nadmin / admin123"
         ctk.CTkLabel(
             tab,
             text=info_text,
@@ -419,104 +479,178 @@ class RepairServiceApp:
         )
 
     def create_widgets(self):
-        """Создание интерфейса"""
+
+        header_frame = ctk.CTkFrame(self.window, corner_radius=12)
+        header_frame.pack(fill="x", padx=15, pady=10)
 
         title_label = ctk.CTkLabel(
-            self.window,
-            text="СИСТЕМА УЧЕТА ЗАЯВОК НА РЕМОНТ",
-            font=("Arial", 20, "bold")
+            header_frame,
+            text="СИСТЕМА УЧЕТА ЗАЯВОК НА РЕМОНТ ТЕХНИКИ",
+            font=("Arial", 28, "bold")
         )
-        title_label.pack(pady=10)
+        title_label.pack(side="left", padx=20, pady=15)
 
-        top_frame = ctk.CTkFrame(self.window)
-        top_frame.pack(pady=10, padx=10, fill="x")
+        user_label = ctk.CTkLabel(
+            header_frame,
+            text=f"👤 {self.current_user['username']} ({self.current_user['role']})",
+            font=("Arial", 18)
+        )
+        user_label.pack(side="right", padx=20)
 
-        if self.current_user['role'] in ['Администратор', 'Менеджер']:
 
-            buttons = [
-                ("➕ Добавить заявку", self.open_add_window, "green"),
-                ("✏️ Редактировать", self.open_edit_window, "blue"),
-                ("🗑️ Удалить", self.delete_request, "red"),
-                ("🔄 Обновить", self.load_requests, "gray"),
-                ("📊 Среднее время", self.show_avg_time, "purple"),
-            ]
-            if self.current_user['role'] == 'Администратор':
-                buttons.append(("👥 Клиенты", self.open_clients_window, "orange"))
-        else:
+        toolbar_frame = ctk.CTkFrame(self.window, corner_radius=12)
+        toolbar_frame.pack(fill="x", padx=15, pady=5)
 
-            buttons = [
-                ("➕ Новая заявка", self.open_add_window, "green"),
-                ("🔄 Обновить", self.load_requests, "gray"),
-            ]
+        btn_add = ctk.CTkButton(
+        toolbar_frame,
+        text="➕ Новая заявка",
+        command=self.open_add_window,
+        width=170,
+        height=45,
+        font=("Arial", 16),
+        fg_color="#00b4d8", 
+        hover_color="#0096c7" 
+    )
+        btn_add.pack(side="left", padx=10, pady=10)
 
-        for text, command, color in buttons:
-            btn = ctk.CTkButton(
-                top_frame,
-                text=text,
-                command=command,
-                fg_color=color,
-                hover_color=color,
-                width=120
-            )
-            btn.pack(side="left", padx=5)
+        btn_edit = ctk.CTkButton(
+        toolbar_frame,
+        text="✏ Редактировать",
+        command=self.open_edit_window,
+        width=170,
+        height=45,
+        font=("Arial", 16),
+        fg_color="#48cae4",
+        hover_color="#00b4d8"
+    )
+        btn_edit.pack(side="left", padx=10)
 
-        ctk.CTkButton(
-            top_frame,
+        btn_delete = ctk.CTkButton(
+            toolbar_frame,
+            text="🗑 Удалить",
+            command=self.delete_request,
+            width=170,
+            height=45,
+            fg_color="#ba3055",
+            hover_color="#ba3055",
+            font=("Arial", 16)
+        )
+        btn_delete.pack(side="left", padx=10)
+
+        btn_refresh = ctk.CTkButton(
+            toolbar_frame,
+            text="🔄 Обновить",
+            command=self.load_requests,
+            width=170,
+            height=45,
+            fg_color="#73a0a4",
+            hover_color="#73a0a4",
+            font=("Arial", 16)
+        )
+        btn_refresh.pack(side="left", padx=10)
+
+        btn_stats = ctk.CTkButton(
+            toolbar_frame,
+            text="📊 Среднее время",
+            command=self.show_avg_time,
+            width=190,
+            height=45,
+            fg_color="#3c9298",
+            hover_color="#3c9298",
+            font=("Arial", 16)
+        )
+        btn_stats.pack(side="left", padx=10)
+
+        btn_logout = ctk.CTkButton(
+            toolbar_frame,
             text="🚪 Выйти",
             command=self.logout,
-            fg_color="red",
-            width=80
-        ).pack(side="right", padx=5)
+            width=130,
+            height=45,
+            fg_color="#3c9298",
+            hover_color="#3c9298",
+            font=("Arial", 16)
+        )
+        btn_logout.pack(side="right", padx=15)
 
-        user_text = f"👤 {self.current_user['username']} ({self.current_user['role']})"
-        ctk.CTkLabel(
-            top_frame,
-            text=user_text,
-            font=("Arial", 12, "bold")
-        ).pack(side="right", padx=10)
 
-        if self.current_user['role'] in ['Администратор', 'Менеджер']:
-            search_frame = ctk.CTkFrame(top_frame)
-            search_frame.pack(side="right", padx=5)
+        table_frame = ctk.CTkFrame(self.window, corner_radius=12)
+        table_frame.pack(fill="both", expand=True, padx=15, pady=10)
 
-            self.search_entry = ctk.CTkEntry(
-                search_frame,
-                placeholder_text="Поиск по клиенту, телефону, модели...",
-                width=250
-            )
-            self.search_entry.pack(side="left", padx=5)
+        columns = (
+            "ID",
+            "Клиент",
+            "Телефон",
+            "Тип устройства",
+            "Модель",
+            "Проблема",
+            "Статус",
+            "Мастер",
+            "Дата"
+        )
 
-            ctk.CTkButton(
-                search_frame,
-                text="🔍 Найти",
-                command=self.search_requests,
-                width=80
-            ).pack(side="left")
+        style = ttk.Style()
+        style.configure("Treeview", font=("Arial", 13), rowheight=32)
+        style.configure("Treeview.Heading", font=("Arial", 14, "bold"))
 
-        columns = ('ID', 'Клиент', 'Телефон', 'Тип', 'Модель', 'Проблема', 'Статус', 'Мастер', 'Дата')
-        self.tree = ttk.Treeview(self.window, columns=columns, show='headings', height=20)
+        self.tree = ttk.Treeview(
+            table_frame,
+            columns=columns,
+            show="headings",
+            height=18
+        )
 
-        widths = [50, 150, 120, 100, 120, 200, 100, 120, 100]
-        for col, width in zip(columns, widths):
+        for col in columns:
             self.tree.heading(col, text=col)
-            self.tree.column(col, width=width)
 
-        v_scrollbar = ttk.Scrollbar(self.window, orient="vertical", command=self.tree.yview)
-        h_scrollbar = ttk.Scrollbar(self.window, orient="horizontal", command=self.tree.xview)
-        self.tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+        self.tree.column("ID", width=60)
+        self.tree.column("Клиент", width=200)
+        self.tree.column("Телефон", width=150)
+        self.tree.column("Тип устройства", width=160)
+        self.tree.column("Модель", width=170)
+        self.tree.column("Проблема", width=260)
+        self.tree.column("Статус", width=140)
+        self.tree.column("Мастер", width=170)
+        self.tree.column("Дата", width=120)
 
-        self.tree.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
-        v_scrollbar.pack(side="right", fill="y", padx=(0, 10), pady=10)
-        h_scrollbar.pack(side="bottom", fill="x", padx=10)
+        scrollbar_y = ttk.Scrollbar(
+            table_frame,
+            orient="vertical",
+            command=self.tree.yview
+        )
 
-        status_frame = ctk.CTkFrame(self.window, height=30)
-        status_frame.pack(side="bottom", fill="x")
+        scrollbar_x = ttk.Scrollbar(
+            table_frame,
+            orient="horizontal",
+            command=self.tree.xview
+        )
 
-        self.status_label = ctk.CTkLabel(status_frame, text="Готов к работе", anchor="w")
-        self.status_label.pack(side="left", padx=10, pady=5)
+        self.tree.configure(
+            yscrollcommand=scrollbar_y.set,
+            xscrollcommand=scrollbar_x.set
+        )
 
-        self.count_label = ctk.CTkLabel(status_frame, text="", anchor="e")
-        self.count_label.pack(side="right", padx=10, pady=5)
+        self.tree.pack(side="left", fill="both", expand=True)
+        scrollbar_y.pack(side="right", fill="y")
+        scrollbar_x.pack(side="bottom", fill="x")
+
+
+        status_frame = ctk.CTkFrame(self.window, height=40, corner_radius=12)
+        status_frame.pack(fill="x", padx=15, pady=10)
+
+        self.status_label = ctk.CTkLabel(
+            status_frame,
+            text="Готово к работе",
+            font=("Arial", 14)
+        )
+        self.status_label.pack(side="left", padx=15, pady=5)
+
+        self.count_label = ctk.CTkLabel(
+            status_frame,
+            text="",
+            font=("Arial", 14)
+        )
+        self.count_label.pack(side="right", padx=15)
 
     def logout(self):
         """Выход из системы"""
