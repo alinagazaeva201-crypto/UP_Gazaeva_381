@@ -62,96 +62,31 @@ class LoginWindow(ctk.CTkToplevel):
         self.on_login_success = on_login_success
 
         self.title("Авторизация - Сервисный центр")
-        self.geometry("520x520")
+        self.geometry("500x550")
         self.resizable(False, False)
 
+        self.center_window()
 
         self.transient(parent)
         self.grab_set()
 
-        self.create_widgets()
-
-    def create_widgets(self):
-
-        main_frame = ctk.CTkFrame(self, corner_radius=15)
-        main_frame.pack(expand=True, padx=40, pady=40)
-
-        title = ctk.CTkLabel(
-            main_frame,
-            text="Система учета ремонта техники",
-            font=("Arial", 26, "bold")
-        )
-        title.pack(pady=(20, 10))
-
-        subtitle = ctk.CTkLabel(
-            main_frame,
-            text="Авторизация",
-            font=("Arial", 18)
-        )
-        subtitle.pack(pady=(0, 20))
-
-
-        ctk.CTkLabel(
-            main_frame,
-            text="Логин",
-            font=("Arial", 14)
-        ).pack(anchor="w")
-
-        self.login_username = ctk.CTkEntry(
-            main_frame,
-            width=320,
-            height=38,
-            placeholder_text="Введите логин"
-        )
-        self.login_username.pack(pady=8)
-
-
-        ctk.CTkLabel(
-            main_frame,
-            text="Пароль",
-            font=("Arial", 14)
-        ).pack(anchor="w")
-
-        self.login_password = ctk.CTkEntry(
-            main_frame,
-            width=320,
-            height=38,
-            show="*",
-            placeholder_text="Введите пароль"
-        )
-        self.login_password.pack(pady=8)
-
-
-        login_btn = ctk.CTkButton(
-            main_frame,
-            text="🔑 Войти",
-            command=self.login,
-            width=320,
-            height=40,
-            font=("Arial", 15)
-        )
-        login_btn.pack(pady=20)
-
-
-        test = ctk.CTkLabel(
-            main_frame,
-            text="Тестовый вход:\nadmin / admin123",
-            font=("Arial", 12),
-            text_color="gray"
-        )
-        test.pack(pady=10)
-
-    def create_widgets(self):
-        """Создание вкладок входа и регистрации"""
-
-        self.tabview = ctk.CTkTabview(self, width=380, height=420)
+        self.tabview = ctk.CTkTabview(self, width=450, height=480)
         self.tabview.pack(pady=20, padx=20)
 
         self.tabview.add("Вход")
-        self.create_login_tab()
-
         self.tabview.add("Регистрация")
+
+        self.create_login_tab()
         self.create_register_tab()
+
+    def center_window(self):
+        """Центрирование окна на экране"""
+        self.update_idletasks()
+        width = self.winfo_width()
+        height = self.winfo_height()
+        x = (self.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.winfo_screenheight() // 2) - (height // 2)
+        self.geometry(f'{width}x{height}+{x}+{y}')
 
     def create_login_tab(self):
         """Создание вкладки входа"""
@@ -160,31 +95,32 @@ class LoginWindow(ctk.CTkToplevel):
         ctk.CTkLabel(
             tab,
             text="ВХОД В СИСТЕМУ",
-            font=("Arial", 18, "bold")
+            font=("Arial", 20, "bold")
         ).pack(pady=30)
 
         ctk.CTkLabel(tab, text="Логин:").pack()
-        self.login_username = ctk.CTkEntry(tab, width=250, placeholder_text="Введите логин")
-        self.login_username.pack(pady=5)
+        self.login_username = ctk.CTkEntry(tab, width=300, placeholder_text="Введите логин")
+        self.login_username.pack(pady=8)
         self.login_username.focus()
 
         ctk.CTkLabel(tab, text="Пароль:").pack()
-        self.login_password = ctk.CTkEntry(tab, width=250, placeholder_text="••••••••", show="*")
-        self.login_password.pack(pady=5)
+        self.login_password = ctk.CTkEntry(tab, width=300, placeholder_text="••••••••", show="*")
+        self.login_password.pack(pady=8)
 
         ctk.CTkButton(
             tab,
             text="🔑 Войти",
             command=self.login,
-            width=200,
-            height=35
+            width=300,
+            height=40,
+            font=("Arial", 14)
         ).pack(pady=20)
 
-        info_text = "Тестовые данные:\nadmin / admin123"
+        info_text = "Тестовые данные:\nadmin / admin123\nmanager / manager123"
         ctk.CTkLabel(
             tab,
             text=info_text,
-            font=("Arial", 10),
+            font=("Arial", 11),
             text_color="gray"
         ).pack(pady=10)
 
@@ -197,44 +133,44 @@ class LoginWindow(ctk.CTkToplevel):
         ctk.CTkLabel(
             tab,
             text="РЕГИСТРАЦИЯ НОВОГО КЛИЕНТА",
-            font=("Arial", 16, "bold")
+            font=("Arial", 18, "bold")
         ).pack(pady=10)
 
         self.reg_fields = {}
 
         ctk.CTkLabel(tab, text="Логин *").pack()
         self.reg_fields['login'] = ctk.CTkEntry(
-            tab, width=250, placeholder_text="от 3 до 20 символов"
+            tab, width=300, placeholder_text="от 3 до 20 символов"
         )
         self.reg_fields['login'].pack(pady=5)
 
         ctk.CTkLabel(tab, text="Пароль *").pack()
         self.reg_fields['password'] = ctk.CTkEntry(
-            tab, width=250, placeholder_text="минимум 6 символов", show="*"
+            tab, width=300, placeholder_text="минимум 6 символов", show="*"
         )
         self.reg_fields['password'].pack(pady=5)
 
         ctk.CTkLabel(tab, text="Подтвердите пароль *").pack()
         self.reg_fields['password_confirm'] = ctk.CTkEntry(
-            tab, width=250, placeholder_text="повторите пароль", show="*"
+            tab, width=300, placeholder_text="повторите пароль", show="*"
         )
         self.reg_fields['password_confirm'].pack(pady=5)
 
         ctk.CTkLabel(tab, text="ФИО *").pack()
         self.reg_fields['full_name'] = ctk.CTkEntry(
-            tab, width=250, placeholder_text="Иванов Иван Иванович"
+            tab, width=300, placeholder_text="Иванов Иван Иванович"
         )
         self.reg_fields['full_name'].pack(pady=5)
 
         ctk.CTkLabel(tab, text="Телефон *").pack()
         self.reg_fields['phone'] = ctk.CTkEntry(
-            tab, width=250, placeholder_text="+7(999)123-45-67"
+            tab, width=300, placeholder_text="+7(999)123-45-67"
         )
         self.reg_fields['phone'].pack(pady=5)
 
         ctk.CTkLabel(tab, text="Email").pack()
         self.reg_fields['email'] = ctk.CTkEntry(
-            tab, width=250, placeholder_text="email@example.com"
+            tab, width=300, placeholder_text="email@example.com"
         )
         self.reg_fields['email'].pack(pady=5)
 
@@ -242,9 +178,10 @@ class LoginWindow(ctk.CTkToplevel):
             tab,
             text="📝 Зарегистрироваться",
             command=self.register,
-            width=200,
-            height=35,
-            fg_color="green"
+            width=300,
+            height=40,
+            fg_color="green",
+            font=("Arial", 14)
         ).pack(pady=15)
 
         ctk.CTkLabel(
@@ -305,7 +242,7 @@ class LoginWindow(ctk.CTkToplevel):
 
     def register(self):
         """Регистрация нового клиента"""
-
+  
         try:
             self.db_manager.cursor.execute("ROLLBACK")
         except:
@@ -359,7 +296,7 @@ class LoginWindow(ctk.CTkToplevel):
             return
 
         try:
-
+          
             self.db_manager.cursor.execute("BEGIN")
 
             self.db_manager.cursor.execute(
